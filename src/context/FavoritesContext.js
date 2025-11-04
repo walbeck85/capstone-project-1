@@ -5,46 +5,47 @@ const FavoritesContext = createContext();
 
 // 2. Create the Provider component
 function FavoritesProvider({ children }) {
-  // 3. State is initialized from localStorage, or an empty array
+  // 3. State is initialized using a function to read from localStorage first.
   const [favoriteIds, setFavoriteIds] = useState(() => {
-    const saved = localStorage.getItem("dogFavorites");
-    return saved ? JSON.parse(saved) : [];
+    const savedFavorites = localStorage.getItem("dogFavorites");
+    // If we found data in localStorage, parse it. Otherwise, start with an empty array.
+    return savedFavorites ? JSON.parse(savedFavorites) : [];
   });
 
-  // 4. UseEffect to SAVE to localStorage whenever favoriteIds changes
+  // 4. This useEffect syncs state *to* localStorage whenever favoriteIds changes.
   useEffect(() => {
     localStorage.setItem("dogFavorites", JSON.stringify(favoriteIds));
   }, [favoriteIds]);
 
-  // 5. Helper function to add a favorite
+  // 5. Helper function to add a favorite breed ID
   const addFavorite = (breedId) => {
-    // Add the id if it's not already there
+    // Check for duplicates before adding
     if (!favoriteIds.includes(breedId)) {
       setFavoriteIds([...favoriteIds, breedId]);
     }
   };
 
-  // 6. Helper function to remove a favorite
+  // 6. Helper function to remove a favorite breed ID
   const removeFavorite = (breedId) => {
-    // Filter out the id
+    // Create a new array that filters out the specified ID
     setFavoriteIds(favoriteIds.filter((id) => id !== breedId));
   };
 
-  // 7. Check if a breed is already a favorite
+  // 7. Helper function to check if a breed is already a favorite
   const isFavorite = (breedId) => {
     return favoriteIds.includes(breedId);
   };
 
-  // 8. Provide the state and functions to all children
+  // 8. Define the value to be provided to consuming components
+  const contextValue = {
+    favoriteIds,
+    addFavorite,
+    removeFavorite,
+    isFavorite
+  };
+
   return (
-    <FavoritesContext.Provider 
-      value={{ 
-        favoriteIds, 
-        addFavorite, 
-        removeFavorite, 
-        isFavorite 
-      }}
-    >
+    <FavoritesContext.Provider value={contextValue}>
       {children}
     </FavoritesContext.Provider>
   );

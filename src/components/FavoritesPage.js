@@ -6,22 +6,24 @@ function FavoritesPage() {
   // 1. Get the list of favorite IDs from our global context
   const { favoriteIds } = useContext(FavoritesContext);
 
-  // 2. We'll need our own state for the fetched breed data, loading, and errors
+  // 2. This page needs its *own* state for loading and data
   const [favorites, setFavorites] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  // 3. Fetch details for ALL favorited breeds
+  // 3. This effect fetches details for ALL favorited breeds
   useEffect(() => {
-    // Don't fetch if there are no favorites
+    // If there are no favorites, don't try to fetch anything
     if (favoriteIds.length === 0) {
       setIsLoading(false);
+      setFavorites([]); // Ensure the list is empty
       return;
     }
 
     async function fetchFavorites() {
+      setIsLoading(true);
       try {
-        // Create an array of fetch promises, one for each ID
+        // Create an array of fetch "promises", one for each ID
         const fetchPromises = favoriteIds.map(id =>
           fetch(`https://api.thedogapi.com/v1/breeds/${id}`, {
             headers: {
@@ -33,7 +35,7 @@ function FavoritesPage() {
           })
         );
         
-        // Wait for all fetches to complete
+        // Promise.all waits for all fetches to complete
         const fetchedBreeds = await Promise.all(fetchPromises);
         setFavorites(fetchedBreeds);
       } catch (e) {
@@ -44,7 +46,7 @@ function FavoritesPage() {
     }
 
     fetchFavorites();
-  }, [favoriteIds]); // Re-run this effect if the list of favoriteIds changes
+  }, [favoriteIds]); // This effect re-runs if the list of favoriteIds changes
 
   // --- RENDER LOGIC ---
   if (isLoading) {
@@ -58,6 +60,7 @@ function FavoritesPage() {
   return (
     <div style={{ padding: "1rem" }}>
       <h2>Your Favorites</h2>
+      {/* Show a message if no favorites are saved */}
       {favorites.length === 0 ? (
         <p>You haven't favorited any breeds yet!</p>
       ) : (
