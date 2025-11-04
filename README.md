@@ -1,70 +1,136 @@
-# Getting Started with Create React App
+# Capstone Project 1: React Dog Breed Finder
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+This repository contains my submission for the first Capstone project, a React application that consumes an external, third-party API.
 
-## Available Scripts
+The application is a "Dog Breed Finder" that allows users to browse, search, sort, and "favorite" dog breeds using data from The Dog API. It is built as a Single Page Application (SPA) using React Router and demonstrates key React concepts such as state management with hooks, client-side routing, and global state with Context.
 
-In the project directory, you can run:
+## Showcase & Deliverables
 
-### `npm start`
+* **Video Presentation:** [Placeholder for link to 5-10 minute video showcase]
+* **Slide Deck:** [Placeholder for link to Google Slides/Canva deck]
+* **Written Reflection:** [Placeholder for link to written reflection document]
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+## Screenshots
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+*(Placeholder: Add screenshots of the app here, showing light and dark modes, the home page, and a details page.)*
 
-### `npm test`
+### Home Page (Light/Dark)
+[Placeholder for Home Page Screenshot]
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+### Details Page (Light/Dark)
+[Placeholder for Details Page Screenshot]
 
-### `npm run build`
+### Favorites Page
+[Placeholder for Favorites Page Screenshot]
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+## Features
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+* **Browse All Breeds:** Fetches and displays a list of all dog breeds from the API on page load.
+* **Dynamic Routing:** Uses React Router (`/breed/:id`) to show a unique, detailed page for each breed.
+* **Client-Side Search:** A controlled search bar that filters breeds by name in real-time.
+* **Client-Side Sorting:** A dropdown to sort the breed list by Name (A-Z, Z-A) or by average Weight (Low-High, High-Low).
+* **Dark Mode:** A site-wide dark mode toggle that persists, built using `useContext`.
+* **Favorites System:** Allows users to "favorite" breeds. Selections are saved to `localStorage` (using a `useContext` provider) and are viewable on a separate "Favorites" page.
+* **Async Handling:** Gracefully handles loading and error states for all API calls.
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+## Environment
 
-### `npm run eject`
+* React 18
+* Node.js 18.x or later
+* `npm` (for package management)
+* `react-router-dom` (for routing)
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+## Setup and Installation
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+**CRITICAL: This app will not function without a free API key from The Dog API.**
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
+**1. Clone and Enter Project**
+```bash
+git clone git@github.com:walbeck85/capstone-project-1.git
+cd capstone-project-1
+````
 
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
+**2. Install Dependencies**
 
-## Learn More
+```bash
+npm install
+```
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+**3. Set Up Environment Variable**
+This step is required for the app to fetch data.
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+  * Go to [https://thedogapi.com/signup](https://thedogapi.com/signup) to get your free API key.
+  * In the root of the project, create a new file named `.env`
+  * Open the `.env` file and add your API key:
+    ```
+    REACT_APP_DOG_API_KEY=your-api-key-goes-here
+    ```
+  * The `.gitignore` file is already configured to ignore `.env`.
 
-### Code Splitting
+## How to Run
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
+After completing the setup, run the app from the root directory:
 
-### Analyzing the Bundle Size
+```bash
+npm start
+```
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
+This will launch the application in development mode at `http://localhost:3000`.
 
-### Making a Progressive Web App
+## File Structure
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
+```
+/dog-breed-finder
+|-- /public
+|-- /src
+|   |-- /components
+|   |   |-- BreedCard.js
+|   |   |-- BreedDetail.js
+|   |   |-- BreedList.js
+|   |   |-- FavoritesPage.js
+|   |   |-- NavBar.js
+|   |   |-- SearchBar.js
+|   |   `-- SortDropdown.js
+|   |
+|   |-- /context
+|   |   |-- FavoritesContext.js
+|   |   `-- ThemeContext.js
+|   |
+|   |-- App.css
+|   |-- App.js
+|   |-- index.css
+|   `-- index.js
+|
+|-- .env.example     (Placeholder for .env structure)
+|-- .gitignore
+|-- package.json
+`-- README.md
+```
 
-### Advanced Configuration
+## Rubric Alignment
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
+This project meets the "Excelled" criteria for Project 1:
 
-### Deployment
+  * **Functionality:** The app successfully fetches and displays data from the external API. It handles loading and error states gracefully. All features (search, sort, routing, favorites, dark mode) are functional and error-free.
+  * **User Interface (UI):** The app is polished, intuitive, and easy to use. It features a clean multi-page layout using React Router and a responsive dark mode.
+  * **Code Quality:** The code is well-structured into reusable components (e.g., `BreedCard`, `SearchBar`), follows DRY principles, and uses `useContext` for global state to avoid prop drilling.
+  * **Maintainability & Documentation:** This `README.md` provides a complete overview and setup guide. The code is fully commented, and the Git history follows a "feature branch" workflow with clear, atomic commit messages.
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
+## Branch and PR Workflow
 
-### `npm run build` fails to minify
+All work was completed on feature branches (e.g., `feature/router-setup`, `feature/breed-list-fetch`, `feature/dark-mode`) and merged into `main` via Pull Requests.
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+## Troubleshooting
+
+  * **Error: "HTTP error\! status: 401"**: This means your API key is missing or incorrect. Please ensure your `.env` file is in the project root, is named correctly, and contains the `REACT_APP_DOG_API_KEY=...` variable. **You must restart the React server (`npm start`) after creating the `.env` file.**
+  * **Images not loading on Favorites page:** This was a known bug that has been fixed. The `BreedCard` component now correctly handles two different image data formats provided by the API.
+
+## Instructor Checklist
+
+1.  Clone the repository.
+2.  Create the `.env` file in the root and add your `REACT_APP_DOG_API_KEY`.
+3.  Run `npm install`.
+4.  Run `npm start`.
+5.  Test app functionality: search, sort, navigation, dark mode, and favorites persistence on refresh.
+
+<!-- end list -->

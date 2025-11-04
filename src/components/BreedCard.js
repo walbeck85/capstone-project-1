@@ -3,29 +3,33 @@ import { Link } from "react-router-dom";
 import { FavoritesContext } from "../context/FavoritesContext";
 
 function BreedCard({ breed }) {
+  // Consume the Favorites context to get its functions
   const { isFavorite, addFavorite, removeFavorite } = useContext(FavoritesContext);
+
+  // Check if this specific card's breed is in the favorites list
   const bIsFavorite = isFavorite(breed.id);
 
-  // --- THIS IS THE FIX ---
-  // We'll create a helper function to find the correct image URL
-  // no matter what kind of object 'breed' is.
+  // Helper function to safely get the correct image URL.
+  // This is needed because the API sends two different data shapes.
   const getImageUrl = () => {
-    // 1. Check if it has the 'image' object (from the /breeds list)
     if (breed.image && breed.image.url) {
+      // Data from the main /breeds list
       return breed.image.url;
     }
-    // 2. Check if it has the 'reference_image_id' (from the /breeds/:id endpoint)
     if (breed.reference_image_id) {
+      // Data from the /breeds/:id endpoint
       return `https://cdn2.thedogapi.com/images/${breed.reference_image_id}.jpg`;
     }
-    // 3. Fallback to a placeholder
+    // Fallback if no image is found
     return "https://via.placeholder.com/300x200";
   };
   
   const imageUrl = getImageUrl();
-  // --- END OF FIX ---
 
+  // This function handles the click on the heart button
   const handleFavoriteClick = (e) => {
+    // e.preventDefault() is critical. It stops the <Link>
+    // from navigating to the details page when we only want to click the button.
     e.preventDefault(); 
     
     if (bIsFavorite) {
@@ -36,8 +40,11 @@ function BreedCard({ breed }) {
   };
 
   return (
-    // We remove the inline 'color' style so dark mode works
+    // This <Link> makes the whole card clickable
+    // We removed the inline 'color' style to respect dark mode
     <Link to={`/breed/${breed.id}`} style={{ textDecoration: 'none', position: 'relative' }}>
+      
+      {/* This button sits on top of the card */}
       <button 
         onClick={handleFavoriteClick} 
         style={{
@@ -52,12 +59,13 @@ function BreedCard({ breed }) {
           cursor: 'pointer',
           fontSize: '1.2rem',
           lineHeight: '30px',
-          zIndex: 10 // Make sure it's on top
+          zIndex: 10 // Ensures button is on top of the image
         }}
       >
         {bIsFavorite ? '❤️' : '🤍'}
       </button>
 
+      {/* The card's visual content */}
       <div style={{
         border: "1px solid #ccc",
         borderRadius: "8px",
@@ -72,7 +80,7 @@ function BreedCard({ breed }) {
           alt={breed.name} 
           style={{ width: "100%", height: "200px", objectFit: "cover", borderRadius: "4px" }} 
         />
-        {/* This h3 will now correctly inherit dark mode color */}
+        {/* This h3 text color is now controlled by App.css */}
         <h3 style={{ marginTop: "1rem" }}>{breed.name}</h3>
       </div>
     </Link>

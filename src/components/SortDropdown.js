@@ -1,9 +1,9 @@
 import React from "react";
 
 /**
- * A controlled component for selecting the sort order.
- * It receives the current sortOrder and the onSortChange handler
- * from its parent (BreedList).
+ * This is another "controlled component", just like SearchBar.
+ * It receives the current 'sortOrder' from its parent
+ * and calls 'onSortChange' when the user selects a new option.
  */
 function SortDropdown({ sortOrder, onSortChange }) {
   return (
@@ -11,8 +11,8 @@ function SortDropdown({ sortOrder, onSortChange }) {
       <label htmlFor="sort">Sort by: </label>
       <select
         id="sort"
-        value={sortOrder}
-        onChange={(e) => onSortChange(e.target.value)}
+        value={sortOrder} // Display the state from the parent
+        onChange={(e) => onSortChange(e.target.value)} // Pass the new value up
         style={{ padding: "0.5rem" }}
       >
         <option value="name-asc">Name: A-Z</option>
