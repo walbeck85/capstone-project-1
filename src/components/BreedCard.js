@@ -1,5 +1,5 @@
 import React from "react";
-import { Link } from "react-router-dom"; // Import Link for navigation
+import { Link } from "react-router-dom";
 
 // We are now receiving the 'breed' object as a prop from BreedList
 function BreedCard({ breed }) {
@@ -10,7 +10,8 @@ function BreedCard({ breed }) {
 
   return (
     // Wrap the card in a Link that goes to our dynamic route
-    <Link to={`/breed/${breed.id}`} style={{ textDecoration: 'none', color: 'black' }}>
+    // We removed 'color: "black"' from the style prop
+    <Link to={`/breed/${breed.id}`} style={{ textDecoration: 'none' }}>
       <div style={{
         border: "1px solid #ccc",
         borderRadius: "8px",
@@ -25,6 +26,7 @@ function BreedCard({ breed }) {
           alt={breed.name} 
           style={{ width: "100%", height: "200px", objectFit: "cover", borderRadius: "4px" }} 
         />
+        {/* This h3 will now inherit its color from the App.css theme */}
         <h3 style={{ marginTop: "1rem" }}>{breed.name}</h3>
       </div>
     </Link>
