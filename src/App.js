@@ -1,23 +1,27 @@
-import logo from './logo.svg';
+import React from 'react';
+import { Routes, Route, Link } from 'react-router-dom';
 import './App.css';
+
+// We'll create these components in the next steps.
+// For now, we'll just use placeholder functions.
+const BreedList = () => <h2>Home Page: Breed List</h2>;
+const BreedDetail = () => <h2>Details Page for One Breed</h2>;
+
+// Placeholder NavBar
+const NavBar = () => (
+  <nav style={{ padding: '1rem', backgroundColor: '#eee' }}>
+    <Link to="/" style={{ marginRight: '1rem' }}>Home</Link>
+  </nav>
+);
 
 function App() {
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      <NavBar />
+      <Routes>
+        <Route path="/breed/:id" element={<BreedDetail />} />
+        <Route path="/" element={<BreedList />} />
+      </Routes>
     </div>
   );
 }
