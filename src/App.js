@@ -1,23 +1,22 @@
-import logo from './logo.svg';
+import React from 'react';
+import { Routes, Route } from 'react-router-dom';
 import './App.css';
+
+// Import our real components
+import NavBar from './components/NavBar';
+import BreedList from './components/BreedList';
+import BreedDetail from './components/BreedDetail';
 
 function App() {
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      <NavBar />
+      <main>
+        <Routes>
+          <Route path="/breed/:id" element={<BreedDetail />} />
+          <Route path="/" element={<BreedList />} />
+        </Routes>
+      </main>
     </div>
   );
 }
