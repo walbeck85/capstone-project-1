@@ -1,9 +1,8 @@
 import React from "react";
 
 /**
- * This is another "controlled component", just like SearchBar.
- * It receives the current 'sortOrder' from its parent
- * and calls 'onSortChange' when the user selects a new option.
+ * A controlled component. It displays the sortOrder from props
+ * and calls onSortChange (the setter function) when the user selects.
  */
 function SortDropdown({ sortOrder, onSortChange }) {
   return (
@@ -11,8 +10,8 @@ function SortDropdown({ sortOrder, onSortChange }) {
       <label htmlFor="sort">Sort by: </label>
       <select
         id="sort"
-        value={sortOrder} // Display the state from the parent
-        onChange={(e) => onSortChange(e.target.value)} // Pass the new value up
+        value={sortOrder}
+        onChange={(e) => onSortChange(e.target.value)}
         style={{ padding: "0.5rem" }}
       >
         <option value="name-asc">Name: A-Z</option>

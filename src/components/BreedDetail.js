@@ -1,24 +1,23 @@
 import React, { useState, useEffect } from "react";
-import { useParams, Link } from "react-router-dom"; // Import useParams to read the URL
+import { useParams, Link } from "react-router-dom"; // Import useParams
 
 function BreedDetail() {
-  // 1. Get the dynamic ':id' from the URL
+  // useParams() reads the dynamic ':id' from the URL
   const { id } = useParams();
 
-  // 2. The 3-state system for our single breed
+  // 3-state system for this page's specific data
   const [breedInfo, setBreedInfo] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  // 3. The useEffect hook, this time dependent on [id]
+  // This effect fetches data for *this specific breed*
   useEffect(() => {
-    // Only run if the 'id' exists
-    if (!id) return;
+    if (!id) return; // Don't fetch if ID isn't in URL
 
     async function fetchBreedDetail() {
-      setIsLoading(true); // Start loading
+      setIsLoading(true);
       try {
-        // Use the 'id' from useParams to build the fetch URL
+        // Use the 'id' from the URL to build the API request
         const response = await fetch(`https://api.thedogapi.com/v1/breeds/${id}`, {
           headers: {
             "x-api-key": process.env.REACT_APP_DOG_API_KEY,
@@ -34,14 +33,14 @@ function BreedDetail() {
       } catch (e) {
         setError(e.message);
       } finally {
-        setIsLoading(false); // Stop loading
+        setIsLoading(false);
       }
     }
 
     fetchBreedDetail();
-  }, [id]); // Dependency array: This effect re-runs *if* the 'id' in the URL changes
+  }, [id]); // Dependency array: This effect re-runs if the 'id' changes
 
-  // 4. Conditional rendering
+  // --- RENDER LOGIC ---
   if (isLoading) {
     return <h2>Loading breed details...</h2>;
   }
@@ -51,17 +50,16 @@ function BreedDetail() {
   }
 
   if (!breedInfo) {
-    return <h2>Breed not found.</h2>; // Handle case where data is empty
+    return <h2>Breed not found.</h2>;
   }
 
-  // 5. The main render: Show the details
+  // Show the loaded details
   return (
     <div style={{ padding: "2rem" }}>
       <Link to="/">&larr; Back to all breeds</Link>
       <div style={{ display: "flex", marginTop: "2rem" }}>
         <img
-          // The breed endpoint gives an image_id, not a full URL
-          // We must construct the image URL ourselves
+          // This endpoint returns a 'reference_image_id', so we build the URL
           src={`https://cdn2.thedogapi.com/images/${breedInfo.reference_image_id}.jpg`}
           alt={breedInfo.name}
           style={{ width: "400px", height: "400px", objectFit: "cover", borderRadius: "8px" }}
