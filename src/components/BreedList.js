@@ -1,41 +1,45 @@
 import React, { useState, useEffect } from "react";
-import BreedCard from "./BreedCard"; // We'll update this next
+import BreedCard from "./BreedCard";
+import SearchBar from "./SearchBar"; // 1. Import the new component
 
 function BreedList() {
-  // 1. The 3-state system you learned in SE05-M02
   const [breeds, setBreeds] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  // 2. The useEffect hook to fetch data when the component mounts
+  // 2. Add new state for the search term
+  const [searchTerm, setSearchTerm] = useState("");
+
   useEffect(() => {
-    
     async function fetchBreeds() {
+      // ... (The rest of your useEffect fetch logic stays exactly the same)
       try {
         const response = await fetch("https://api.thedogapi.com/v1/breeds", {
           headers: {
-            // This reads your key from the .env file
             "x-api-key": process.env.REACT_APP_DOG_API_KEY,
           },
         });
-
         if (!response.ok) {
           throw new Error(`HTTP error! status: ${response.status}`);
         }
-
         const data = await response.json();
-        setBreeds(data); // Put the loaded data into state
+        setBreeds(data);
       } catch (e) {
-        setError(e.message); // Put any errors into state
+        setError(e.message);
       } finally {
-        setIsLoading(false); // Always stop loading, whether it worked or failed
+        setIsLoading(false);
       }
     }
 
     fetchBreeds();
-  }, []); // The empty array [] means this runs only once
+  }, []);
 
-  // 3. Conditional rendering based on our 3 states
+  // 3. Create a filtered list *before* the return
+  // This filters the 'breeds' array based on the 'searchTerm' state
+  const filteredBreeds = breeds.filter((breed) =>
+    breed.name.toLowerCase().includes(searchTerm.toLowerCase())
+  );
+
   if (isLoading) {
     return <h2>Loading breeds...</h2>;
   }
@@ -44,12 +48,16 @@ function BreedList() {
     return <h2 style={{ color: "red" }}>Error: {error}</h2>;
   }
 
-  // 4. If not loading and no error, show the data
   return (
     <div>
       <h2>Dog Breed Finder</h2>
+      
+      {/* 4. Render the SearchBar and pass it the state and setter */}
+      <SearchBar searchTerm={searchTerm} onSearchChange={setSearchTerm} />
+
       <div style={{ display: "flex", flexWrap: "wrap", justifyContent: "center" }}>
-        {breeds.map((breed) => (
+        {/* 5. Map over the *filtered* list instead of the full 'breeds' list */}
+        {filteredBreeds.map((breed) => (
           <BreedCard key={breed.id} breed={breed} />
         ))}
       </div>
