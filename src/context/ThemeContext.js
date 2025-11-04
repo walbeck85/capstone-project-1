@@ -1,11 +1,11 @@
 import React, { createContext, useState } from "react";
 
-// 1. Create the context object. This is what components will import to "consume" the state.
+// 1. Create the context object
 const ThemeContext = createContext();
 
-// 2. Create the Provider component. This component will wrap our app and "provide" the state.
+// 2. Create the Provider component that will "wrap" our app
 function ThemeProvider({ children }) {
-  // State to hold the current theme. "light" is the default.
+  // State to hold the current theme, defaulting to "light"
   const [theme, setTheme] = useState("light");
 
   // Function to toggle the theme
@@ -13,8 +13,7 @@ function ThemeProvider({ children }) {
     setTheme(theme === "light" ? "dark" : "light");
   };
 
-  // 3. Define the "value" object to be passed down.
-  // We pass both the current theme and the function to change it.
+  // 3. Define the value to be passed down to all consuming components
   const contextValue = { theme, toggleTheme };
 
   return (

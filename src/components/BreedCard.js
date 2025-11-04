@@ -1,27 +1,29 @@
 import React, { useContext } from "react";
 import { Link } from "react-router-dom";
-import { CompareContext } from "../context/CompareContext"; // Correct import
+import { CompareContext } from "../context/CompareContext";
 
 function BreedCard({ breed }) {
-  // Consume the correct context
+  // Consume context to check/change compare list
   const { isInCompare, addCompare, removeCompare, compareCount } = useContext(CompareContext);
   const bIsInCompare = isInCompare(breed.id);
 
+  // Helper to safely find the correct image URL
   const getImageUrl = () => {
     if (breed.image && breed.image.url) {
-      return breed.image.url;
+      return breed.image.url; // From /breeds list
     }
     if (breed.reference_image_id) {
-      return `https://cdn2.thedogapi.com/images/${breed.reference_image_id}.jpg`;
+      return `https://cdn2.thedogapi.com/images/${breed.reference_image_id}.jpg`; // From /breeds/:id
     }
-    return "https://via.placeholder.com/300x200";
+    return "https://via.placeholder.com/300x200"; // Fallback
   };
   
   const imageUrl = getImageUrl();
 
+  // Handles click on the "Compare" button
   const handleCompareClick = (e) => {
-    e.preventDefault(); 
-    // Use the correct variables
+    e.preventDefault(); // Stops the <Link> from navigating
+    
     if (bIsInCompare) {
       removeCompare(breed.id);
     } else {
@@ -34,7 +36,9 @@ function BreedCard({ breed }) {
   };
 
   return (
+    // This <Link> makes the whole card clickable
     <Link to={`/breed/${breed.id}`} style={{ textDecoration: 'none', position: 'relative' }}>
+      
       <div style={{
         border: "1px solid #ccc",
         borderRadius: "8px",
@@ -48,17 +52,20 @@ function BreedCard({ breed }) {
         justifyContent: "space-between" 
       }}>
         
+        {/* Top block (Image + Name) */}
         <div style={{ textAlign: "center" }}>
           <img 
             src={imageUrl} 
             alt={breed.name} 
             style={{ width: "100%", height: "200px", objectFit: "cover", borderRadius: "4px" }} 
           />
+          {/* minHeight ensures buttons align even if name wraps */}
           <h3 style={{ marginTop: "1rem", minHeight: "2.4em" }}>
             {breed.name}
           </h3>
         </div>
 
+        {/* Bottom block (Button) */}
         <button 
           onClick={handleCompareClick} 
           style={{
