@@ -10,10 +10,10 @@ import {
   CardMedia,
   CardContent,
   CardActions,
-  Snackbar, // This is MUI's version of a Toast
-  Alert,    // This goes inside the Snackbar
+  Snackbar,
+  Alert,
   Box,
-  CircularProgress // This is a loading spinner
+  CircularProgress
 } from '@mui/material';
 import AddIcon from '@mui/icons-material/Add';
 import CheckIcon from '@mui/icons-material/Check';
@@ -90,7 +90,7 @@ function BreedCard({ breed }) {
 
   // --- Render ---
   return (
-    // The scene and container are the same, they handle the animation
+    // We are still on the 'feature/mui-refactor' branch
     <div className="card-scene">
       <div 
         className={`card-container ${isFlipped ? "is-flipped" : ""}`}
@@ -98,79 +98,78 @@ function BreedCard({ breed }) {
       >
         
         {/* === CARD FRONT === */}
-        <Card 
-          className="card-face card-face-front" 
-          sx={{ 
-            display: 'flex', 
-            flexDirection: 'column', 
-            height: '100%',
-            position: 'relative' // Positioning parent
-          }}
-        >
-          <CardMedia
-            component="img"
-            height="200"
-            image={getImageUrl()}
-            alt={breed.name}
-            sx={{ objectPosition: 'top' }}
-          />
-          {/* Give CardContent a large padding-bottom to create a "buffer"
-            for the absolutely positioned button.
-          */}
-          <CardContent sx={{ textAlign: 'center', pb: '80px' }}> 
-            {/* *** THIS IS THE FIX ***
-              1. Changed variant="h6" to variant="body1" (smaller)
-              2. Added fontWeight="bold" to keep it looking like a title
-            */}
-            <Typography variant="body1" component="div" sx={{ fontWeight: 'bold' }}>
-              {breed.name}
-            </Typography>
-          </CardContent>
-          
-          <CardActions sx={{ 
-            justifyContent: 'center',
-            position: 'absolute',
-            bottom: '16px',
-            left: 0,
-            right: 0
-          }}>
-            {/* *** THIS IS THE FIX ***
-              3. Added size="small" to the button
-            */}
-            <Button
-              size="small" // <-- Makes the button smaller
-              variant={bIsInCompare ? "contained" : "outlined"}
-              color={bIsInCompare ? "primary" : "inherit"}
-              startIcon={bIsInCompare ? <CheckIcon /> : <AddIcon />}
-              onClick={handleCompareClick}
-            >
-              {bIsInCompare ? 'Added to Compare' : 'Add to Compare'}
-            </Button>
-          </CardActions>
-        </Card>
+        {/* *** THIS IS THE FIX ***
+          We WRAP the MUI <Card> in the .card-face div
+          This forces the <Card> to obey the animation's position.
+        */}
+        <div className="card-face card-face-front">
+          <Card 
+            sx={{ 
+              display: 'flex', 
+              flexDirection: 'column', 
+              height: '100%',
+              position: 'relative' // Positioning parent for the button
+            }}
+          >
+            <CardMedia
+              component="img"
+              height="200"
+              image={getImageUrl()}
+              alt={breed.name}
+              sx={{ objectPosition: 'top' }}
+            />
+            <CardContent sx={{ textAlign: 'center', pb: '80px' }}> 
+              <Typography variant="body1" component="div" sx={{ fontWeight: 'bold' }}>
+                {breed.name}
+              </Typography>
+            </CardContent>
+            <CardActions sx={{ 
+              justifyContent: 'center',
+              position: 'absolute',
+              bottom: '16px',
+              left: 0,
+              right: 0
+            }}>
+              <Button
+                size="small"
+                variant={bIsInCompare ? "contained" : "outlined"}
+                color={bIsInCompare ? "primary" : "inherit"}
+                startIcon={bIsInCompare ? <CheckIcon /> : <AddIcon />}
+                onClick={handleCompareClick}
+              >
+                {bIsInCompare ? 'Added to Compare' : 'Add to Compare'}
+              </Button>
+            </CardActions>
+          </Card>
+        </div>
         
         {/* === CARD BACK (DETAILS) === */}
-        <Card className="card-face card-face-back">
-          <CardContent sx={{ textAlign: 'left', fontSize: '0.9rem' }}>
-            {isLoading && (
-              <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '300px' }}>
-                <CircularProgress />
-              </Box>
-            )}
-            {error && <Typography color="error">Error: {error}</Typography>}
-            {details && (
-              <>
-                <Typography variant="h6" component="div" gutterBottom>{details.name}</Typography>
-                <Typography variant="body2"><strong>Temperament:</strong> {details.temperament}</Typography>
-                <Typography variant="body2"><strong>Life Span:</strong> {details.life_span}</Typography>
-                <Typography variant="body2"><strong>Weight:</strong> {details.weight.imperial} lbs</Typography>
-                <Typography variant="body2"><strong>Bred For:</strong> {details.bred_for}</Typography>
-                <Typography variant="body2"><strong>Origin:</strong> {details.origin || 'N/A'}</Typography>
-                <Typography variant="body2"><strong>Breed Group:</strong> {details.breed_group || 'N/A'}</Typography>
-              </>
-            )}
-          </CardContent>
-        </Card>
+        {/* *** THIS IS THE FIX ***
+          We do the same thing for the back face.
+        */}
+        <div className="card-face card-face-back">
+          <Card sx={{ height: '100%', overflow: 'auto' }}>
+            <CardContent sx={{ textAlign: 'left', fontSize: '0.9rem' }}>
+              {isLoading && (
+                <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '300px' }}>
+                  <CircularProgress />
+                </Box>
+              )}
+              {error && <Typography color="error">Error: {error}</Typography>}
+              {details && (
+                <>
+                  <Typography variant="h6" component="div" gutterBottom>{details.name}</Typography>
+                  <Typography variant="body2"><strong>Temperament:</strong> {details.temperament}</Typography>
+                  <Typography variant="body2"><strong>Life Span:</strong> {details.life_span}</Typography>
+                  <Typography variant="body2"><strong>Weight:</strong> {details.weight.imperial} lbs</Typography>
+                  <Typography variant="body2"><strong>Bred For:</strong> {details.bred_for}</Typography>
+                  <Typography variant="body2"><strong>Origin:</strong> {details.origin || 'N/A'}</Typography>
+                  <Typography variant="body2"><strong>Breed Group:</strong> {details.breed_group || 'N/A'}</Typography>
+                </>
+              )}
+            </CardContent>
+          </Card>
+        </div>
       </div>
 
       {/* === MUI SNACKBAR (TOAST) === */}
