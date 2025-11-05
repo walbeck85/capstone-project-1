@@ -18,11 +18,14 @@ function BreedDetail() {
       setIsLoading(true);
       try {
         // Use the 'id' from the URL to build the API request
-        const response = await fetch(`https://api.thedogapi.com/v1/breeds/${id}`, {
-          headers: {
-            "x-api-key": process.env.REACT_APP_DOG_API_KEY,
-          },
-        });
+        const response = await fetch(
+          `https://api.thedogapi.com/v1/breeds/${id}`,
+          {
+            headers: {
+              "x-api-key": process.env.REACT_APP_DOG_API_KEY,
+            },
+          }
+        );
 
         if (!response.ok) {
           throw new Error(`HTTP error! status: ${response.status}`);
@@ -57,20 +60,46 @@ function BreedDetail() {
   return (
     <div style={{ padding: "2rem" }}>
       <Link to="/">&larr; Back to all breeds</Link>
-      <div style={{ display: "flex", marginTop: "2rem" }}>
+      <div style={{ display: "flex", flexWrap: "wrap", marginTop: "2rem" }}>
         <img
           // This endpoint returns a 'reference_image_id', so we build the URL
           src={`https://cdn2.thedogapi.com/images/${breedInfo.reference_image_id}.jpg`}
           alt={breedInfo.name}
-          style={{ width: "400px", height: "400px", objectFit: "cover", borderRadius: "8px" }}
+          style={{
+            width: "400px",
+            height: "400px",
+            objectFit: "cover",
+            borderRadius: "8px",
+            minWidth: "300px",
+          }}
         />
-        <div style={{ marginLeft: "2rem" }}>
+        <div style={{ marginLeft: "2rem", flex: 1, minWidth: "300px" }}>
           <h1>{breedInfo.name}</h1>
-          <p><strong>Temperament:</strong> {breedInfo.temperament}</p>
-          <p><strong>Bred For:</strong> {breedInfo.bred_for}</p>
-          <p><strong>Life Span:</strong> {breedInfo.life_span}</p>
-          <p><strong>Weight:</strong> {breedInfo.weight.imperial} lbs ({breedInfo.weight.metric} kg)</p>
-          <p><strong>Height:</strong> {breedInfo.height.imperial} in ({breedInfo.height.metric} cm)</p>
+          <p>
+            <strong>Temperament:</strong> {breedInfo.temperament}
+          </p>
+          <p>
+            <strong>Bred For:</strong> {breedInfo.bred_for || "N/A"}
+          </p>
+          {/* --- NEW FIELDS ADDED --- */}
+          <p>
+            <strong>Breed Group:</strong> {breedInfo.breed_group || "N/A"}
+          </p>
+          <p>
+            <strong>Origin:</strong> {breedInfo.origin || "N/A"}
+          </p>
+          {/* --- END NEW FIELDS --- */}
+          <p>
+            <strong>Life Span:</strong> {breedInfo.life_span}
+          </p>
+          <p>
+            <strong>Weight:</strong> {breedInfo.weight.imperial} lbs (
+            {breedInfo.weight.metric} kg)
+          </p>
+          <p>
+            <strong>Height:</strong> {breedInfo.height.imperial} in (
+            {breedInfo.height.metric} cm)
+          </p>
         </div>
       </div>
     </div>
