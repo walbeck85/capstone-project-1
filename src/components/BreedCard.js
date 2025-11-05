@@ -1,7 +1,22 @@
-import React, { useState, useContext, useEffect } from "react";
+import React, { useState, useContext } from "react";
 import { CompareContext } from "../context/CompareContext";
-import "./BreedCard.css"; // Handles the flip animation
-import Toast from "./Toast"; // Import the Toast component
+import "./BreedCard.css"; // We still need this for the flip animation!
+
+// --- Import all the new MUI components ---
+import {
+  Typography,
+  Button,
+  Card,
+  CardMedia,
+  CardContent,
+  CardActions,
+  Snackbar, // This is MUI's version of a Toast
+  Alert,    // This goes inside the Snackbar
+  Box,
+  CircularProgress // This is a loading spinner
+} from '@mui/material';
+import AddIcon from '@mui/icons-material/Add';
+import CheckIcon from '@mui/icons-material/Check';
 
 function BreedCard({ breed }) {
   // --- Context ---
@@ -10,12 +25,12 @@ function BreedCard({ breed }) {
 
   // --- Local State ---
   const [isFlipped, setIsFlipped] = useState(false);
-  const [details, setDetails] = useState(null); // To store data from the new fetch
+  const [details, setDetails] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
 
-  // --- Toast State ---
-  const [toast, setToast] = useState({ show: false, message: "", type: "" });
+  // --- Snackbar (Toast) State ---
+  const [toast, setToast] = useState({ open: false, message: "", severity: "success" });
 
   // --- Image URL Helper ---
   const getImageUrl = () => {
@@ -23,17 +38,6 @@ function BreedCard({ breed }) {
     if (breed.reference_image_id) return `https://cdn2.thedogapi.com/images/${breed.reference_image_id}.jpg`;
     return "https://via.placeholder.com/300x200"; // Fallback
   };
-  const imageUrl = getImageUrl();
-
-  // --- Toast Timer Effect ---
-  useEffect(() => {
-    if (toast.show) {
-      const timer = setTimeout(() => {
-        setToast({ show: false, message: "", type: "" });
-      }, 3000); // Hide toast after 3 seconds
-      return () => clearTimeout(timer);
-    }
-  }, [toast.show]);
 
   // --- API Fetch for Card Details ---
   const fetchBreedDetails = async () => {
@@ -60,111 +64,126 @@ function BreedCard({ breed }) {
 
   // --- Event Handlers ---
   const handleCardClick = () => {
-    if (!isFlipped) {
-      fetchBreedDetails();
-    } else {
-      setIsFlipped(false);
-    }
+    if (!isFlipped) fetchBreedDetails();
+    else setIsFlipped(false);
   };
 
   const handleCompareClick = (e) => {
-    e.stopPropagation();
-    setToast({ show: false, message: "", type: "" });
+    e.stopPropagation(); // Stop the card from flipping
     if (bIsInCompare) {
       removeCompare(breed.id);
-      setToast({ show: true, message: `${breed.name} removed from compare.`, type: "success" });
+      setToast({ open: true, message: `${breed.name} removed from compare.`, severity: "success" });
     } else {
       if (compareCount < 3) {
         addCompare(breed.id);
-        setToast({ show: true, message: `${breed.name} added to compare!`, type: "success" });
+        setToast({ open: true, message: `${breed.name} added to compare!`, severity: "success" });
       } else {
-        setToast({ show: true, message: "Compare limit is 3.", type: "error" });
+        setToast({ open: true, message: "Compare limit is 3.", severity: "error" });
       }
     }
   };
-
-  const handleToastClose = () => {
-    setToast({ show: false, message: "", type: "" });
+  
+  const handleToastClose = (event, reason) => {
+    if (reason === 'clickaway') return;
+    setToast({ ...toast, open: false });
   };
 
   // --- Render ---
   return (
-    <div className="card-scene" onClick={handleCardClick}>
-      <Toast 
-        show={toast.show} 
-        message={toast.message} 
-        type={toast.type} 
-        onClose={handleToastClose} 
-      />
-      
-      <div className={`card-container ${isFlipped ? "is-flipped" : ""}`}>
+    // The scene and container are the same, they handle the animation
+    <div className="card-scene">
+      <div 
+        className={`card-container ${isFlipped ? "is-flipped" : ""}`}
+        onClick={handleCardClick}
+      >
         
         {/* === CARD FRONT === */}
-        <div className="card-face card-face-front">
-          <div style={{ height: "100%", display: "flex", flexDirection: "column", position: "relative" }}>
-            <img
-              src={imageUrl}
-              alt={breed.name}
-              style={{
-                width: "100%",
-                height: "200px",
-                objectFit: "cover",
-                objectPosition: "top",
-                borderRadius: "4px 4px 0 0"
-              }}
-            />
-            
-            <h3 style={{
-              margin: "0.75rem 0.5rem 3.5rem 0.5rem",
-              fontSize: "1.1rem",
-              lineHeight: "1.3em",
-              overflow: "hidden",
-              textAlign: "center"
-            }}>
+        <Card 
+          className="card-face card-face-front" 
+          sx={{ 
+            display: 'flex', 
+            flexDirection: 'column', 
+            height: '100%',
+            position: 'relative' // Positioning parent
+          }}
+        >
+          <CardMedia
+            component="img"
+            height="200"
+            image={getImageUrl()}
+            alt={breed.name}
+            sx={{ objectPosition: 'top' }}
+          />
+          {/* Give CardContent a large padding-bottom to create a "buffer"
+            for the absolutely positioned button.
+          */}
+          <CardContent sx={{ textAlign: 'center', pb: '80px' }}> 
+            {/* *** THIS IS THE FIX ***
+              1. Changed variant="h6" to variant="body1" (smaller)
+              2. Added fontWeight="bold" to keep it looking like a title
+            */}
+            <Typography variant="body1" component="div" sx={{ fontWeight: 'bold' }}>
               {breed.name}
-            </h3>
-            
-            <button
+            </Typography>
+          </CardContent>
+          
+          <CardActions sx={{ 
+            justifyContent: 'center',
+            position: 'absolute',
+            bottom: '16px',
+            left: 0,
+            right: 0
+          }}>
+            {/* *** THIS IS THE FIX ***
+              3. Added size="small" to the button
+            */}
+            <Button
+              size="small" // <-- Makes the button smaller
+              variant={bIsInCompare ? "contained" : "outlined"}
+              color={bIsInCompare ? "primary" : "inherit"}
+              startIcon={bIsInCompare ? <CheckIcon /> : <AddIcon />}
               onClick={handleCompareClick}
-              style={{
-                background: bIsInCompare ? '#61dafb' : '#fff',
-                color: bIsInCompare ? '#000' : '#282c34',
-                border: '1px solid #ccc',
-                borderRadius: '4px',
-                padding: '0.6rem',
-                cursor: 'pointer',
-                fontSize: '0.9rem',
-                fontWeight: 'bold',
-                transition: 'background-color 0.2s ease',
-                position: 'absolute',
-                bottom: '1rem',
-                left: '1rem',
-                right: '1rem'
-              }}
             >
-              {bIsInCompare ? '✓ Added to Compare' : 'Add to Compare'}
-            </button>
-          </div>
-        </div>
+              {bIsInCompare ? 'Added to Compare' : 'Add to Compare'}
+            </Button>
+          </CardActions>
+        </Card>
         
         {/* === CARD BACK (DETAILS) === */}
-        <div className="card-face card-face-back">
-          {isLoading && <h4>Loading details...</h4>}
-          {error && <h4 style={{ color: 'red' }}>Error: {error}</h4>}
-          {details && (
-            <div style={{ padding: '1rem', fontSize: '0.85rem', textAlign: 'left' }}> {/* Slightly smaller font to fit more */}
-              <h4 style={{ marginTop: 0, marginBottom: '0.75rem', borderBottom: '1px solid #555' }}>{details.name}</h4>
-              <p><strong>Temperament:</strong> {details.temperament}</p>
-              <p><strong>Life Span:</strong> {details.life_span}</p>
-              <p><strong>Weight:</strong> {details.weight.imperial} lbs</p>
-              <p><strong>Bred For:</strong> {details.bred_for}</p>
-              {/* *** THESE ARE THE NEW FIELDS *** */}
-              <p><strong>Origin:</strong> {details.origin || 'N/A'}</p> {/* Added || 'N/A' for safety */}
-              <p><strong>Breed Group:</strong> {details.breed_group || 'N/A'}</p>
-            </div>
-          )}
-        </div>
+        <Card className="card-face card-face-back">
+          <CardContent sx={{ textAlign: 'left', fontSize: '0.9rem' }}>
+            {isLoading && (
+              <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '300px' }}>
+                <CircularProgress />
+              </Box>
+            )}
+            {error && <Typography color="error">Error: {error}</Typography>}
+            {details && (
+              <>
+                <Typography variant="h6" component="div" gutterBottom>{details.name}</Typography>
+                <Typography variant="body2"><strong>Temperament:</strong> {details.temperament}</Typography>
+                <Typography variant="body2"><strong>Life Span:</strong> {details.life_span}</Typography>
+                <Typography variant="body2"><strong>Weight:</strong> {details.weight.imperial} lbs</Typography>
+                <Typography variant="body2"><strong>Bred For:</strong> {details.bred_for}</Typography>
+                <Typography variant="body2"><strong>Origin:</strong> {details.origin || 'N/A'}</Typography>
+                <Typography variant="body2"><strong>Breed Group:</strong> {details.breed_group || 'N/A'}</Typography>
+              </>
+            )}
+          </CardContent>
+        </Card>
       </div>
+
+      {/* === MUI SNACKBAR (TOAST) === */}
+      <Snackbar
+        open={toast.open}
+        autoHideDuration={3000}
+        onClose={handleToastClose}
+        anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }} 
+      >
+        <Alert onClose={handleToastClose} severity={toast.severity} sx={{ width: '100%' }}>
+          {toast.message}
+        </Alert>
+      </Snackbar>
     </div>
   );
 }
