@@ -1,0 +1,77 @@
+.filter-container {
+  width: 100%;
+  max-width: 800px;
+  margin: 1rem auto;
+  padding: 1rem;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+}
+
+/* Dark mode styles */
+.App.dark .filter-container {
+  border-color: #444;
+}
+
+.filter-search {
+  width: 100%;
+  padding: 0.75rem;
+  font-size: 1rem;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  margin-bottom: 1rem;
+  box-sizing: border-box; /* Ensures padding doesn't affect width */
+}
+
+/* Dark mode styles */
+.App.dark .filter-search {
+  background-color: #333;
+  border-color: #555;
+  color: #f5f5f5;
+}
+
+.filter-list {
+  max-height: 200px; /* Makes the list scrollable */
+  overflow-y: auto;
+  border: 1px solid #eee;
+  border-radius: 4px;
+  padding: 0.5rem;
+}
+
+/* Dark mode styles */
+.App.dark .filter-list {
+  border-color: #444;
+}
+
+.filter-option {
+  display: block; /* Makes each checkbox on its own line */
+  margin: 0.5rem 0;
+  cursor: pointer;
+}
+
+.filter-option input {
+  margin-right: 0.5rem;
+}
+
+.filter-clear {
+  margin-top: 1rem;
+  padding: 0.5rem 1rem;
+  background-color: #f0f0f0;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  cursor: pointer;
+  font-weight: bold;
+}
+
+.filter-clear:hover {
+  background-color: #e0e0e0;
+}
+
+/* Dark mode styles */
+.App.dark .filter-clear {
+  background-color: #444;
+  border-color: #555;
+  color: #f5f5f5;
+}
+.App.dark .filter-clear:hover {
+  background-color: #555;
+}
