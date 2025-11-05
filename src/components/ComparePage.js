@@ -1,6 +1,6 @@
 import React, { useContext, useState, useEffect } from "react";
 import { CompareContext } from "../context/CompareContext";
-import './ComparePage.css'; // We'll create this CSS file next
+import "./ComparePage.css"; // We'll create this CSS file next
 
 function ComparePage() {
   // 1. Get the list of IDs from our global context
@@ -23,17 +23,17 @@ function ComparePage() {
       setIsLoading(true);
       try {
         // Create an array of fetch promises, one for each ID
-        const fetchPromises = compareIds.map(id =>
+        const fetchPromises = compareIds.map((id) =>
           fetch(`https://api.thedogapi.com/v1/breeds/${id}`, {
             headers: {
               "x-api-key": process.env.REACT_APP_DOG_API_KEY,
             },
-          }).then(res => {
+          }).then((res) => {
             if (!res.ok) throw new Error(`HTTP error! status: ${res.status}`);
             return res.json();
           })
         );
-        
+
         // Wait for all fetches to complete
         const fetchedBreeds = await Promise.all(fetchPromises);
         setBreeds(fetchedBreeds);
@@ -63,7 +63,10 @@ function ComparePage() {
         <p>You haven't selected any breeds to compare. Add up to 3!</p>
       ) : (
         <>
-          <button onClick={clearCompare} style={{marginBottom: '1rem', padding: '0.5rem'}}>
+          <button
+            onClick={clearCompare}
+            style={{ marginBottom: "1rem", padding: "0.5rem" }}
+          >
             Clear Comparison
           </button>
           <table className="compare-table">
@@ -71,7 +74,7 @@ function ComparePage() {
               <tr>
                 <th>Feature</th>
                 {/* Create a header column for each breed */}
-                {breeds.map(breed => (
+                {breeds.map((breed) => (
                   <th key={breed.id}>{breed.name}</th>
                 ))}
               </tr>
@@ -80,12 +83,17 @@ function ComparePage() {
               {/* Row for Image */}
               <tr>
                 <td>Image</td>
-                {breeds.map(breed => (
+                {breeds.map((breed) => (
                   <td key={breed.id}>
-                    <img 
-                      src={`https://cdn2.thedogapi.com/images/${breed.reference_image_id}.jpg`} 
+                    <img
+                      src={`https://cdn2.thedogapi.com/images/${breed.reference_image_id}.jpg`}
                       alt={breed.name}
-                      style={{width: '200px', height: '150px', objectFit: 'cover', borderRadius: '4px'}}
+                      style={{
+                        width: "200px",
+                        height: "150px",
+                        objectFit: "cover",
+                        borderRadius: "4px",
+                      }}
                     />
                   </td>
                 ))}
@@ -93,36 +101,52 @@ function ComparePage() {
               {/* Row for Temperament */}
               <tr>
                 <td>Temperament</td>
-                {breeds.map(breed => (
-                  <td key={breed.id}>{breed.temperament}</td>
+                {breeds.map((breed) => (
+                  <td key={breed.id}>{breed.temperament || "N/A"}</td>
                 ))}
               </tr>
-              {/* Row for Life Span */}
+              {/* --- NEW FIELDS ADDED --- */}
               <tr>
                 <td>Life Span</td>
-                {breeds.map(breed => (
-                  <td key={breed.id}>{breed.life_span}</td>
+                {breeds.map((breed) => (
+                  <td key={breed.id}>{breed.life_span || "N/A"}</td>
                 ))}
               </tr>
+              <tr>
+                <td>Bred For</td>
+                {breeds.map((breed) => (
+                  <td key={breed.id}>{breed.bred_for || "N/A"}</td>
+                ))}
+              </tr>
+              <tr>
+                <td>Breed Group</td>
+                {breeds.map((breed) => (
+                  <td key={breed.id}>{breed.breed_group || "N/A"}</td>
+                ))}
+              </tr>
+              <tr>
+                <td>Origin</td>
+                {breeds.map((breed) => (
+                  <td key={breed.id}>{breed.origin || "N/A"}</td>
+                ))}
+              </tr>
+              {/* --- END NEW FIELDS --- */}
               {/* Row for Weight */}
               <tr>
                 <td>Weight (imperial)</td>
-                {breeds.map(breed => (
-                  <td key={breed.id}>{breed.weight.imperial} lbs</td>
+                {breeds.map((breed) => (
+                  <td key={breed.id}>
+                    {breed.weight ? `${breed.weight.imperial} lbs` : "N/A"}
+                  </td>
                 ))}
               </tr>
               {/* Row for Height */}
               <tr>
                 <td>Height (imperial)</td>
-                {breeds.map(breed => (
-                  <td key={breed.id}>{breed.height.imperial} in</td>
-                ))}
-              </tr>
-              {/* Row for Bred For */}
-              <tr>
-                <td>Bred For</td>
-                {breeds.map(breed => (
-                  <td key={breed.id}>{breed.bred_for}</td>
+                {breeds.map((breed) => (
+                  <td key={breed.id}>
+                    {breed.height ? `${breed.height.imperial} in` : "N/A"}
+                  </td>
                 ))}
               </tr>
             </tbody>
