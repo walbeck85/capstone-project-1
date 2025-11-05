@@ -18,6 +18,11 @@ function SortDropdown({ sortOrder, onSortChange }) {
         <option value="name-desc">Name: Z-A</option>
         <option value="weight-asc">Weight: Low to High</option>
         <option value="weight-desc">Weight: High to Low</option>
+        {/* === NEW OPTIONS BELOW === */}
+        <option value="height-asc">Height: Short to Tall</option>
+        <option value="height-desc">Height: Tall to Short</option>
+        <option value="lifespan-asc">Lifespan: Short to Long</option>
+        <option value="lifespan-desc">Lifespan: Long to Short</option>
       </select>
     </div>
   );

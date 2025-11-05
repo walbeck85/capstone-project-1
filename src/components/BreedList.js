@@ -50,13 +50,35 @@ function BreedList() {
     fetchBreeds();
   }, []); 
 
-  // --- HELPER FUNCTION (for sorting) ---
+  // --- HELPER FUNCTIONS (for sorting) ---
+
+  // Generic helper to parse a range string (e.g., "10 - 12")
+  const getAverageFromRange = (rangeString) => {
+    if (!rangeString) return 0;
+    // Use regex to find all numbers in the string
+    const numbers = rangeString.match(/\d+/g);
+    if (!numbers) return 0;
+    
+    const sum = numbers.reduce((sum, val) => sum + parseInt(val, 10), 0);
+    return sum / (numbers.length || 1);
+  }
+
+  // Helper for Weight
   const getAverageWeight = (breed) => {
-    if (!breed.weight || !breed.weight.imperial) return 0;
-    const parts = breed.weight.imperial.split(" - ");
-    const avg = parts.reduce((sum, val) => sum + parseInt(val, 10), 0) / (parts.length || 1);
-    return avg;
+    return getAverageFromRange(breed.weight?.imperial);
   };
+
+  // *** NEW HELPER for Height ***
+  const getAverageHeight = (breed) => {
+    return getAverageFromRange(breed.height?.imperial);
+  };
+
+  // *** NEW HELPER for Lifespan ***
+  const getAverageLifespan = (breed) => {
+    // We can use the same function for lifespan, e.g., "10 - 12 years"
+    return getAverageFromRange(breed.life_span);
+  };
+
 
   // --- FILTERING & SORTING LOGIC ---
   const processedBreeds = breeds
@@ -71,11 +93,16 @@ function BreedList() {
       );
     })
     .sort((a, b) => {
+      // *** UPDATED SWITCH STATEMENT ***
       switch (sortOrder) {
         case "name-asc": return a.name.localeCompare(b.name);
         case "name-desc": return b.name.localeCompare(a.name);
         case "weight-asc": return getAverageWeight(a) - getAverageWeight(b);
         case "weight-desc": return getAverageWeight(b) - getAverageWeight(a);
+        case "height-asc": return getAverageHeight(a) - getAverageHeight(b);
+        case "height-desc": return getAverageHeight(b) - getAverageHeight(a);
+        case "lifespan-asc": return getAverageLifespan(a) - getAverageLifespan(b);
+        case "lifespan-desc": return getAverageLifespan(b) - getAverageLifespan(a);
         default: return 0;
       }
     });
@@ -97,9 +124,6 @@ function BreedList() {
           Filter Temperaments ({selectedTemperaments.length})
         </button>
 
-        {/* *** THIS IS THE NEW BUTTON ***
-           It only appears if there are selected temperaments
-        */}
         {selectedTemperaments.length > 0 && (
           <button 
             className="clear-button" 
