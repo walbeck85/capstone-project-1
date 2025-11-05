@@ -1,50 +1,52 @@
 import React, { useContext } from "react";
 import { NavLink } from "react-router-dom";
-import { ThemeContext } from "../context/ThemeContext";
+import { useAppTheme } from "../context/AppThemeProvider"; // <-- IMPORT NEW HOOK
 import { CompareContext } from "../context/CompareContext";
+// --- THIS LINE IS THE FIX ---
+// I've removed 'Box' from the import list
+import { AppBar, Toolbar, Typography, Button } from '@mui/material'; // <-- IMPORT MUI
+import Brightness4Icon from '@mui/icons-material/Brightness4'; // Dark mode icon
+import Brightness7Icon from '@mui/icons-material/Brightness7'; // Light mode icon
 
 function NavBar() {
-  // Consume both global contexts
-  const { theme, toggleTheme } = useContext(ThemeContext);
+  // Consume contexts
+  const { mode, toggleTheme } = useAppTheme(); // <-- Use new hook
   const { compareCount } = useContext(CompareContext);
 
-  // Helper style object to make links react to the theme
-  const linkStyle = {
-    marginRight: "1rem",
-    color: theme === "light" ? "#000" : "#fff",
-  };
+  // Define a style for the NavLink, as it's not an MUI component
+  // We'll make it look like the other text
+  const navLinkStyle = ({ isActive }) => ({
+    color: 'inherit', // Inherits white/black from AppBar
+    textDecoration: isActive ? 'underline' : 'none',
+    marginRight: '1rem',
+    fontWeight: isActive ? 'bold' : 'normal',
+  });
 
   return (
-    <nav
-      style={{
-        padding: "1rem",
-        backgroundColor: theme === "light" ? "#f0f0f0" : "#333", // Theme-aware background
-        marginBottom: "1rem",
-        display: "flex",
-        justifyContent: "space-between",
-        alignItems: "center",
-        // --- UX FIXES APPLIED ---
-        position: "sticky", // Make the nav bar "stick"
-        top: 0, // Stick it to the top of the viewport
-        zIndex: 10, // Ensure it stays above other content
-        // --- END UX FIXES ---
-      }}
-    >
-      {/* Page Navigation */}
-      <div>
-        <NavLink to="/" style={linkStyle}>
-          Home
-        </NavLink>
-        <NavLink to="/compare" style={linkStyle}>
-          Compare ({compareCount}) {/* Shows live count */}
-        </NavLink>
-      </div>
-
-      {/* Theme Toggle Button */}
-      <button onClick={toggleTheme} style={{ padding: "0.5rem" }}>
-        Toggle {theme === "light" ? "Dark" : "Light"} Mode
-      </button>
-    </nav>
+    // <AppBar> is the new <nav>. 'position="sticky"' makes it sticky!
+    <AppBar position="sticky">
+      {/* <Toolbar> handles the padding and flex layout */}
+      <Toolbar>
+        {/* <Typography> is for text. flexGrow: 1 pushes everything else to the right */}
+        <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
+          <NavLink to="/" style={navLinkStyle}>
+            Dog Breed Finder
+          </NavLink>
+          <NavLink to="/compare" style={navLinkStyle}>
+            Compare ({compareCount})
+          </NavLink>
+        </Typography>
+        
+        {/* <Button> is the new <button>. 'color="inherit"' makes it match */}
+        <Button 
+          color="inherit" 
+          onClick={toggleTheme}
+          startIcon={mode === 'light' ? <Brightness4Icon /> : <Brightness7Icon />}
+        >
+          {mode === 'light' ? 'Dark Mode' : 'Light Mode'}
+        </Button>
+      </Toolbar>
+    </AppBar>
   );
 }
 

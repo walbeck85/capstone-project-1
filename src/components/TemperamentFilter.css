@@ -1,28 +1,6 @@
-/* Main button for opening the filter modal */
-.filter-button {
-  padding: 0.75rem 1rem;
-  font-size: 0.9rem;
-  font-weight: bold;
-  background-color: #61dafb; /* React blue */
-  color: #000;
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
-  transition: background-color 0.2s ease;
-}
-
-.filter-button:hover {
-  background-color: #52bde0;
-}
-
-.App.dark .filter-button {
-  background-color: #61dafb;
-  color: #282c34;
-}
-
-.App.dark .filter-button:hover {
-  background-color: #88eaff;
-}
+/* We can now DELETE the .filter-button and .clear-button styles.
+  The only styles left are for the modal's *internal* content.
+*/
 
 /* Styles for the filter component INSIDE the modal */
 .filter-container {
@@ -54,18 +32,13 @@
   border-radius: 4px;
 }
 
-/* *** SIMPLIFIED CSS ***
-  Now we are styling the <div> wrapper.
-*/
 .filter-list-item {
-  /* This div is already display: block, so it will stack! */
   padding: 0.25rem;
   border-radius: 4px;
 }
 
-/* Style the label inside the div */
 .filter-list-item label {
-  display: block; /* Make the whole label area clickable */
+  display: block;
   width: 100%;
   padding: 0.25rem;
   cursor: pointer;
@@ -94,29 +67,6 @@
   background-color: #555;
 }
 
-/* Style for the "Clear Filters" button */
-.clear-button {
-  padding: 0.75rem 1rem;
-  font-size: 0.9rem;
-  font-weight: bold;
-  background-color: #fbe9e7; /* Light pink/red */
-  color: #c93434; /* Dark red */
-  border: 1px solid #c93434;
-  border-radius: 4px;
-  cursor: pointer;
-  transition: background-color 0.2s ease;
-}
-
-.clear-button:hover {
-  background-color: #ffcdd2;
-}
-
-.App.dark .clear-button {
-  background-color: #5c2f2f;
-  color: #ffacac;
-  border-color: #a34141;
-}
-
-.App.dark .clear-button:hover {
-  background-color: #6d3a3a;
-}
+/* .clear-button styles are GONE 
+  .filter-button styles are GONE 
+*/

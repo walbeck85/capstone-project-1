@@ -3,22 +3,21 @@ import ReactDOM from 'react-dom/client';
 import { BrowserRouter } from 'react-router-dom';
 import './index.css';
 import App from './App';
-import { ThemeProvider } from './context/ThemeContext';
+import { AppThemeProvider } from './context/AppThemeProvider'; // <-- IMPORT NEW
 import { CompareProvider } from './context/CompareContext';
+// import { ThemeProvider } from './context/ThemeContext'; // <-- DELETE OLD
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   <React.StrictMode>
-    {/* BrowserRouter provides routing capabilities to the entire app.
-      ThemeProvider provides the global dark/light mode state.
-      CompareProvider provides the global list of breeds to compare.
-    */}
     <BrowserRouter>
-      <ThemeProvider>
+      {/* Use the new AppThemeProvider */}
+      <AppThemeProvider>
+        {/* CompareProvider is still needed! */}
         <CompareProvider>
           <App />
         </CompareProvider>
-      </ThemeProvider>
+      </AppThemeProvider>
     </BrowserRouter>
   </React.StrictMode>
 );

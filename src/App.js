@@ -1,33 +1,27 @@
-import React, { useContext } from 'react';
+import React from 'react'; // No longer need useContext here
 import { Routes, Route } from 'react-router-dom';
 import './App.css';
-import { ThemeContext } from './context/ThemeContext';
+// import { ThemeContext } from './context/ThemeContext'; // <-- DELETE OLD
 
 // --- Component Imports ---
 import NavBar from './components/NavBar';
 import BreedList from './components/BreedList';
-// import BreedDetail from './components/BreedDetail'; // <-- 1. REMOVED THIS LINE
 import ComparePage from './components/ComparePage';
+// We already deleted BreedDetail, which is correct
 
 function App() {
-  // Consume the theme context to get the current theme ('light' or 'dark')
-  const { theme } = useContext(ThemeContext);
+  // const { theme } = useContext(ThemeContext); // <-- DELETE OLD
+  // <div className={`App ${theme}`}> // <-- DELETE OLD
 
-  // Apply the theme as a class to the main app container.
-  // This allows App.css to control the global styles.
+  // MUI's CssBaseline and ThemeProvider handle all the
+  // background colors and text colors for us.
+  // The 'App' className can still be used for app-wide margins.
   return (
-    <div className={`App ${theme}`}>
+    <div className="App"> 
       <NavBar />
       <main>
-        {/* The Routes component defines all valid "pages" for the app */}
         <Routes>
-          {/* Dynamic route for a single breed's details */}
-          {/* <Route path="/breed/:id" element={<BreedDetail />} /> */} {/* <-- 2. REMOVED THIS LINE */}
-          
-          {/* Route for the comparison page */}
           <Route path="/compare" element={<ComparePage />} />
-          
-          {/* The default home page route */}
           <Route path="/" element={<BreedList />} />
         </Routes>
       </main>

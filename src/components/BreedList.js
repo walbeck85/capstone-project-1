@@ -2,20 +2,21 @@ import React, { useState, useEffect } from "react";
 import BreedCard from "./BreedCard";
 import SearchBar from "./SearchBar";
 import SortDropdown from "./SortDropdown";
-import TemperamentFilter from "./TemperamentFilter"; // Import new component
-import Modal from "./Modal"; // Import Modal
-import "./TemperamentFilter.css"; // Import CSS for filter
+import TemperamentFilter from "./TemperamentFilter";
+import Modal from "./Modal";
+// import "./TemperamentFilter.css"; // <-- REMOVED! This CSS is no longer needed here.
+import { Box, Button } from '@mui/material'; // <-- IMPORT MUI
 
 function BreedList() {
   // --- STATE MANAGEMENT ---
-  const [breeds, setBreeds] = useState([]); // Master list from API
-  const [isLoading, setIsLoading] = useState(true); // Loading state
-  const [error, setError] = useState(null); // Error state
-  const [searchTerm, setSearchTerm] = useState(""); // Controlled search input
-  const [sortOrder, setSortOrder] = useState("name-asc"); // Controlled sort input
-  const [allTemperaments, setAllTemperaments] = useState([]); // Master list of unique temperaments
-  const [selectedTemperaments, setSelectedTemperaments] = useState([]); // User's selected temperaments
-  const [isModalOpen, setIsModalOpen] = useState(false); // Modal visibility
+  const [breeds, setBreeds] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const [searchTerm, setSearchTerm] = useState("");
+  const [sortOrder, setSortOrder] = useState("name-asc");
+  const [allTemperaments, setAllTemperaments] = useState([]);
+  const [selectedTemperaments, setSelectedTemperaments] = useState([]);
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   // --- DATA FETCHING ---
   useEffect(() => {
@@ -32,7 +33,7 @@ function BreedList() {
         const data = await response.json();
         setBreeds(data);
 
-        // --- Calculate all temperaments ---
+        // Calculate all temperaments
         const temperamentsSet = new Set();
         data.forEach(breed => {
           if (breed.temperament) {
@@ -51,34 +52,16 @@ function BreedList() {
   }, []); 
 
   // --- HELPER FUNCTIONS (for sorting) ---
-
-  // Generic helper to parse a range string (e.g., "10 - 12")
   const getAverageFromRange = (rangeString) => {
     if (!rangeString) return 0;
-    // Use regex to find all numbers in the string
     const numbers = rangeString.match(/\d+/g);
     if (!numbers) return 0;
-    
     const sum = numbers.reduce((sum, val) => sum + parseInt(val, 10), 0);
     return sum / (numbers.length || 1);
   }
-
-  // Helper for Weight
-  const getAverageWeight = (breed) => {
-    return getAverageFromRange(breed.weight?.imperial);
-  };
-
-  // *** NEW HELPER for Height ***
-  const getAverageHeight = (breed) => {
-    return getAverageFromRange(breed.height?.imperial);
-  };
-
-  // *** NEW HELPER for Lifespan ***
-  const getAverageLifespan = (breed) => {
-    // We can use the same function for lifespan, e.g., "10 - 12 years"
-    return getAverageFromRange(breed.life_span);
-  };
-
+  const getAverageWeight = (breed) => getAverageFromRange(breed.weight?.imperial);
+  const getAverageHeight = (breed) => getAverageFromRange(breed.height?.imperial);
+  const getAverageLifespan = (breed) => getAverageFromRange(breed.life_span);
 
   // --- FILTERING & SORTING LOGIC ---
   const processedBreeds = breeds
@@ -93,7 +76,6 @@ function BreedList() {
       );
     })
     .sort((a, b) => {
-      // *** UPDATED SWITCH STATEMENT ***
       switch (sortOrder) {
         case "name-asc": return a.name.localeCompare(b.name);
         case "name-desc": return b.name.localeCompare(a.name);
@@ -112,29 +94,47 @@ function BreedList() {
   if (error) return <h2 style={{ color: "red" }}>Error: {error}</h2>;
 
   return (
-    <div style={{ padding: "0 1rem" }}>
-      <h2>Dog Breed Finder</h2>
+    // We use sx={{ p: 2 }} to give the page some padding (p: 2 = 16px)
+    <Box sx={{ p: 2 }}>
+      {/* We can remove the <h2>, as the AppBar has the title now */}
       
-      {/* Controls Area */}
-      <div style={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'center', alignItems: 'center', gap: '1rem', maxWidth: '1000px', margin: 'auto' }}>
+      {/* Controls Area, now using Box */}
+      <Box sx={{ 
+        display: 'flex', 
+        flexWrap: 'wrap', 
+        justifyContent: 'center', 
+        alignItems: 'center', 
+        gap: '1rem', 
+        maxWidth: '1000px', 
+        margin: 'auto',
+        mb: 2 // Margin bottom
+      }}>
         <SearchBar searchTerm={searchTerm} onSearchChange={setSearchTerm} />
         <SortDropdown sortOrder={sortOrder} onSortChange={setSortOrder} />
         
-        <button className="filter-button" onClick={() => setIsModalOpen(true)}>
+        {/* --- REPLACED WITH MUI BUTTON --- */}
+        <Button 
+          variant="contained" 
+          onClick={() => setIsModalOpen(true)}
+          sx={{ m: "1rem 0" }} // Give it the same margin as the others
+        >
           Filter Temperaments ({selectedTemperaments.length})
-        </button>
+        </Button>
 
+        {/* --- REPLACED WITH MUI BUTTON --- */}
         {selectedTemperaments.length > 0 && (
-          <button 
-            className="clear-button" 
+          <Button 
+            variant="outlined" 
+            color="error" // 'error' gives it the red/pink style
             onClick={() => setSelectedTemperaments([])}
+            sx={{ m: "1rem 0" }}
           >
             Clear Filters
-          </button>
+          </Button>
         )}
-      </div>
+      </Box>
 
-      {/* --- Modal for Filtering --- */}
+      {/* --- Modal for Filtering (no change needed yet) --- */}
       {isModalOpen && (
         <Modal onClose={() => setIsModalOpen(false)}>
           <TemperamentFilter
@@ -146,7 +146,7 @@ function BreedList() {
       )}
 
       {/* Grid Display Area */}
-      <div style={{
+      <Box sx={{
         display: "grid",
         gridTemplateColumns: "repeat(auto-fill, minmax(300px, 1fr))",
         gap: "1.5rem",
@@ -157,8 +157,8 @@ function BreedList() {
         {processedBreeds.map((breed) => (
           <BreedCard key={breed.id} breed={breed} />
         ))}
-      </div>
-    </div>
+      </Box>
+    </Box>
   );
 }
 
