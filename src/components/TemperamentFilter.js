@@ -1,79 +1,66 @@
-import React, { useState } from "react";
-import "./TemperamentFilter.css"; // We'll create this CSS file next
+import React, { useState, useMemo } from 'react';
+// We just need the CSS file, no JS component
+import './TemperamentFilter.css';
 
 /**
- * A component that displays a searchable, multi-select list of temperaments.
- *
- * @param {string[]} allTemperaments - The master list of all unique temperaments.
- * @param {string[]} selectedTemperaments - The list of currently selected temperaments.
- * @param {function} onTemperamentChange - The setter function (setSelectedTemperaments) from BreedList.
+ * A filter component with a search bar and a multi-select list.
  */
-function TemperamentFilter({
-  allTemperaments,
-  selectedTemperaments,
-  onTemperamentChange,
-}) {
-  // --- STATE ---
-  // This state is local *to this component*
-  // It only controls the text in the filter's search bar
-  const [filterSearchTerm, setFilterSearchTerm] = useState("");
+function TemperamentFilter({ allTemperaments, selectedTemperaments, onTemperamentChange }) {
+  const [searchTerm, setSearchTerm] = useState('');
 
-  // --- HANDLERS ---
-  /**
-   * Called when a user checks or unchecks a box.
-   */
-  const handleCheckboxChange = (temp) => {
-    if (selectedTemperaments.includes(temp)) {
-      // It's already in the list, so remove it
-      onTemperamentChange(selectedTemperaments.filter((t) => t !== temp));
+  // Memoize the filtering calculation so it only re-runs when
+  // the search term or the master list changes.
+  const filteredTemperaments = useMemo(() => {
+    return allTemperaments.filter(temp =>
+      temp.toLowerCase().includes(searchTerm.toLowerCase())
+    );
+  }, [allTemperaments, searchTerm]);
+
+  // Handler for when a checkbox is clicked
+  const handleCheckboxChange = (temperament) => {
+    // Check if the temperament is already selected
+    if (selectedTemperaments.includes(temperament)) {
+      // If yes, filter it out (remove it)
+      onTemperamentChange(
+        selectedTemperaments.filter(t => t !== temperament)
+      );
     } else {
-      // It's not in the list, so add it
-      onTemperamentChange([...selectedTemperaments, temp]);
+      // If no, add it to the list
+      onTemperamentChange([...selectedTemperaments, temperament]);
     }
   };
-
-  // --- RENDER LOGIC ---
-  // Create a derived list of temperaments to display,
-  // based on the filter's local search bar
-  const displayedTemperaments = allTemperaments.filter((temp) =>
-    temp.toLowerCase().includes(filterSearchTerm.toLowerCase())
-  );
 
   return (
     <div className="filter-container">
       <h3>Filter by Temperament:</h3>
-      {/* 1. The search bar for the filter itself */}
       <input
         type="text"
         placeholder="Search temperaments..."
-        className="filter-search"
-        value={filterSearchTerm}
-        onChange={(e) => setFilterSearchTerm(e.target.value)}
+        className="filter-search-input"
+        value={searchTerm}
+        onChange={(e) => setSearchTerm(e.target.value)}
       />
-      {/* 2. The scrollable list of checkboxes */}
+      
       <div className="filter-list">
-        {displayedTemperaments.map((temp) => (
-          <label key={temp} className="filter-option">
-            <input
-              type="checkbox"
-              value={temp}
-              // The box is checked if this temp is in the global selectedTemperaments array
-              checked={selectedTemperaments.includes(temp)}
-              onChange={() => handleCheckboxChange(temp)}
-            />
-            {temp}
-          </label>
+        {filteredTemperaments.map(temp => (
+          
+          // *** THIS IS THE FIX ***
+          // We wrap each item in a <div>
+          // This div is a block element and will force a new line,
+          // guaranteeing our single-column layout.
+          <div key={temp} className="filter-list-item">
+            <label>
+              <input
+                type="checkbox"
+                checked={selectedTemperaments.includes(temp)}
+                onChange={() => handleCheckboxChange(temp)}
+              />
+              {temp}
+            </label>
+          </div>
+
         ))}
       </div>
-      {/* 3. A helper to clear all selections */}
-      {selectedTemperaments.length > 0 && (
-        <button
-          className="filter-clear"
-          onClick={() => onTemperamentChange([])}
-        >
-          Clear All Filters
-        </button>
-      )}
     </div>
   );
 }
