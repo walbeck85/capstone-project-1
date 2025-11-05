@@ -6,7 +6,7 @@ import { ThemeContext } from './context/ThemeContext';
 // --- Component Imports ---
 import NavBar from './components/NavBar';
 import BreedList from './components/BreedList';
-import BreedDetail from './components/BreedDetail';
+// import BreedDetail from './components/BreedDetail'; // <-- 1. REMOVED THIS LINE
 import ComparePage from './components/ComparePage';
 
 function App() {
@@ -22,7 +22,7 @@ function App() {
         {/* The Routes component defines all valid "pages" for the app */}
         <Routes>
           {/* Dynamic route for a single breed's details */}
-          <Route path="/breed/:id" element={<BreedDetail />} />
+          {/* <Route path="/breed/:id" element={<BreedDetail />} /> */} {/* <-- 2. REMOVED THIS LINE */}
           
           {/* Route for the comparison page */}
           <Route path="/compare" element={<ComparePage />} />

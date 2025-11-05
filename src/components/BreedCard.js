@@ -1,163 +1,171 @@
-import React, { useContext, useState, useEffect } from "react";
-import { Link } from "react-router-dom";
+import React, { useState, useContext, useEffect } from "react";
 import { CompareContext } from "../context/CompareContext";
+import "./BreedCard.css"; // Handles the flip animation
+import Toast from "./Toast"; // Import the Toast component
 
 function BreedCard({ breed }) {
-  // Consume context to check/change compare list
-  const { isInCompare, addCompare, removeCompare, compareCount } =
-    useContext(CompareContext);
+  // --- Context ---
+  const { isInCompare, addCompare, removeCompare, compareCount } = useContext(CompareContext);
   const bIsInCompare = isInCompare(breed.id);
 
-  // --- UX FIX 3: State for notifications ---
-  const [notification, setNotification] = useState("");
-  const [error, setError] = useState("");
+  // --- Local State ---
+  const [isFlipped, setIsFlipped] = useState(false);
+  const [details, setDetails] = useState(null); // To store data from the new fetch
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState(null);
 
-  // Effect to clear notifications after 3 seconds
-  useEffect(() => {
-    let timer;
-    if (notification) {
-      timer = setTimeout(() => setNotification(""), 3000);
-    }
-    if (error) {
-      timer = setTimeout(() => setError(""), 3000);
-    }
-    // Cleanup function to clear the timer if component unmounts
-    return () => clearTimeout(timer);
-  }, [notification, error]); // Re-run whenever messages change
+  // --- Toast State ---
+  const [toast, setToast] = useState({ show: false, message: "", type: "" });
 
-  // Helper to safely find the correct image URL
+  // --- Image URL Helper ---
   const getImageUrl = () => {
-    if (breed.image && breed.image.url) {
-      return breed.image.url; // From /breeds list
-    }
-    if (breed.reference_image_id) {
-      return `https://cdn2.thedogapi.com/images/${breed.reference_image_id}.jpg`; // From /breeds/:id
-    }
+    if (breed.image && breed.image.url) return breed.image.url;
+    if (breed.reference_image_id) return `https://cdn2.thedogapi.com/images/${breed.reference_image_id}.jpg`;
     return "https://via.placeholder.com/300x200"; // Fallback
   };
-
   const imageUrl = getImageUrl();
 
-  // Handles click on the "Compare" button
-  const handleCompareClick = (e) => {
-    e.preventDefault(); // Stops the <Link> from navigating
+  // --- Toast Timer Effect ---
+  useEffect(() => {
+    if (toast.show) {
+      const timer = setTimeout(() => {
+        setToast({ show: false, message: "", type: "" });
+      }, 3000); // Hide toast after 3 seconds
+      return () => clearTimeout(timer);
+    }
+  }, [toast.show]);
 
+  // --- API Fetch for Card Details ---
+  const fetchBreedDetails = async () => {
+    if (details) {
+      setIsFlipped(true); 
+      return;
+    }
+    setIsLoading(true);
+    setIsFlipped(true);
+    setError(null);
+    try {
+      const response = await fetch(`https://api.thedogapi.com/v1/breeds/${breed.id}`, {
+        headers: { "x-api-key": process.env.REACT_APP_DOG_API_KEY },
+      });
+      if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+      const data = await response.json();
+      setDetails(data);
+    } catch (e) {
+      setError(e.message);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  // --- Event Handlers ---
+  const handleCardClick = () => {
+    if (!isFlipped) {
+      fetchBreedDetails();
+    } else {
+      setIsFlipped(false);
+    }
+  };
+
+  const handleCompareClick = (e) => {
+    e.stopPropagation();
+    setToast({ show: false, message: "", type: "" });
     if (bIsInCompare) {
       removeCompare(breed.id);
-      // Optional: add a remove notification if you want
-      // setNotification(`${breed.name} removed.`);
-      // setError("");
+      setToast({ show: true, message: `${breed.name} removed from compare.`, type: "success" });
     } else {
       if (compareCount < 3) {
         addCompare(breed.id);
-        // --- UX FIX 3: Set success notification ---
-        setNotification(`${breed.name} added!`);
-        setError("");
+        setToast({ show: true, message: `${breed.name} added to compare!`, type: "success" });
       } else {
-        // --- UX FIX 3: Set error notification (replaces alert) ---
-        setError("Compare limit is 3 breeds.");
-        setNotification("");
+        setToast({ show: true, message: "Compare limit is 3.", type: "error" });
       }
     }
   };
 
-  // --- Style for the notification toasts ---
-  const toastStyle = {
-    position: "absolute",
-    top: "16px",
-    left: "16px",
-    right: "16px",
-    padding: "0.75rem",
-    borderRadius: "6px",
-    textAlign: "center",
-    fontWeight: "bold",
-    fontSize: "0.9rem",
-    zIndex: 20,
-    boxShadow: "0 2px 8px rgba(0,0,0,0.2)",
-    color: "#fff",
+  const handleToastClose = () => {
+    setToast({ show: false, message: "", type: "" });
   };
 
+  // --- Render ---
   return (
-    // This <Link> makes the whole card clickable
-    // We add position: 'relative' to the Link's style so the toast can be positioned
-    <Link
-      to={`/breed/${breed.id}`}
-      style={{ textDecoration: "none", position: "relative" }}
-    >
-      {/* --- UX FIX 3: Render notification toasts --- */}
-      {notification && (
-        <div
-          style={{
-            ...toastStyle,
-            backgroundColor: "#28a745", // Green for success
-          }}
-        >
-          {notification}
+    <div className="card-scene" onClick={handleCardClick}>
+      <Toast 
+        show={toast.show} 
+        message={toast.message} 
+        type={toast.type} 
+        onClose={handleToastClose} 
+      />
+      
+      <div className={`card-container ${isFlipped ? "is-flipped" : ""}`}>
+        
+        {/* === CARD FRONT === */}
+        <div className="card-face card-face-front">
+          <div style={{ height: "100%", display: "flex", flexDirection: "column", position: "relative" }}>
+            <img
+              src={imageUrl}
+              alt={breed.name}
+              style={{
+                width: "100%",
+                height: "200px",
+                objectFit: "cover",
+                objectPosition: "top",
+                borderRadius: "4px 4px 0 0"
+              }}
+            />
+            
+            <h3 style={{
+              margin: "0.75rem 0.5rem 3.5rem 0.5rem",
+              fontSize: "1.1rem",
+              lineHeight: "1.3em",
+              overflow: "hidden",
+              textAlign: "center"
+            }}>
+              {breed.name}
+            </h3>
+            
+            <button
+              onClick={handleCompareClick}
+              style={{
+                background: bIsInCompare ? '#61dafb' : '#fff',
+                color: bIsInCompare ? '#000' : '#282c34',
+                border: '1px solid #ccc',
+                borderRadius: '4px',
+                padding: '0.6rem',
+                cursor: 'pointer',
+                fontSize: '0.9rem',
+                fontWeight: 'bold',
+                transition: 'background-color 0.2s ease',
+                position: 'absolute',
+                bottom: '1rem',
+                left: '1rem',
+                right: '1rem'
+              }}
+            >
+              {bIsInCompare ? '✓ Added to Compare' : 'Add to Compare'}
+            </button>
+          </div>
         </div>
-      )}
-      {error && (
-        <div
-          style={{
-            ...toastStyle,
-            backgroundColor: "#dc3545", // Red for error
-          }}
-        >
-          {error}
+        
+        {/* === CARD BACK (DETAILS) === */}
+        <div className="card-face card-face-back">
+          {isLoading && <h4>Loading details...</h4>}
+          {error && <h4 style={{ color: 'red' }}>Error: {error}</h4>}
+          {details && (
+            <div style={{ padding: '1rem', fontSize: '0.85rem', textAlign: 'left' }}> {/* Slightly smaller font to fit more */}
+              <h4 style={{ marginTop: 0, marginBottom: '0.75rem', borderBottom: '1px solid #555' }}>{details.name}</h4>
+              <p><strong>Temperament:</strong> {details.temperament}</p>
+              <p><strong>Life Span:</strong> {details.life_span}</p>
+              <p><strong>Weight:</strong> {details.weight.imperial} lbs</p>
+              <p><strong>Bred For:</strong> {details.bred_for}</p>
+              {/* *** THESE ARE THE NEW FIELDS *** */}
+              <p><strong>Origin:</strong> {details.origin || 'N/A'}</p> {/* Added || 'N/A' for safety */}
+              <p><strong>Breed Group:</strong> {details.breed_group || 'N/A'}</p>
+            </div>
+          )}
         </div>
-      )}
-
-      <div
-        style={{
-          border: "1px solid #ccc",
-          borderRadius: "8px",
-          padding: "1rem",
-          margin: "1rem",
-          width: "300px",
-          boxShadow: "0 2px 4px rgba(0,0,0,0.1)",
-          display: "flex",
-          flexDirection: "column",
-          height: "350px",
-          justifyContent: "space-between",
-        }}
-      >
-        {/* Top block (Image + Name) */}
-        <div style={{ textAlign: "center" }}>
-          <img
-            src={imageUrl}
-            alt={breed.name}
-            style={{
-              width: "100%",
-              height: "200px",
-              objectFit: "cover",
-              borderRadius: "4px",
-            }}
-          />
-          {/* minHeight ensures buttons align even if name wraps */}
-          <h3 style={{ marginTop: "1rem", minHeight: "2.4em" }}>
-            {breed.name}
-          </h3>
-        </div>
-
-        {/* Bottom block (Button) */}
-        <button
-          onClick={handleCompareClick}
-          style={{
-            background: bIsInCompare ? "#61dafb" : "#fff",
-            color: bIsInCompare ? "#000" : "#282c34",
-            border: "1px solid #ccc",
-            borderRadius: "4px",
-            padding: "0.75rem",
-            cursor: "pointer",
-            fontSize: "0.9rem",
-            fontWeight: "bold",
-            transition: "background-color 0.2s ease",
-          }}
-        >
-          {/* --- UX FIX 1: Updated Button Text --- */}
-          {bIsInCompare ? "✓ Added to Compare" : "Add to Compare"}
-        </button>
       </div>
-    </Link>
+    </div>
   );
 }
 
