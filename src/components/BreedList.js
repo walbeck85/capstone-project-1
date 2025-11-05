@@ -3,9 +3,8 @@ import BreedCard from "./BreedCard";
 import SearchBar from "./SearchBar";
 import SortDropdown from "./SortDropdown";
 import TemperamentFilter from "./TemperamentFilter";
-import Modal from "./Modal";
-// import "./TemperamentFilter.css"; // <-- REMOVED! This CSS is no longer needed here.
-import { Box, Button } from '@mui/material'; // <-- IMPORT MUI
+// import Modal from "./Modal"; // <-- DELETE THIS IMPORT
+import { Box, Button } from '@mui/material';
 
 function BreedList() {
   // --- STATE MANAGEMENT ---
@@ -16,9 +15,9 @@ function BreedList() {
   const [sortOrder, setSortOrder] = useState("name-asc");
   const [allTemperaments, setAllTemperaments] = useState([]);
   const [selectedTemperaments, setSelectedTemperaments] = useState([]);
-  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isModalOpen, setIsModalOpen] = useState(false); // This state now controls the Dialog
 
-  // --- DATA FETCHING ---
+  // --- DATA FETCHING (No Changes) ---
   useEffect(() => {
     async function fetchBreeds() {
       try {
@@ -51,7 +50,7 @@ function BreedList() {
     fetchBreeds();
   }, []); 
 
-  // --- HELPER FUNCTIONS (for sorting) ---
+  // --- HELPER FUNCTIONS (No Changes) ---
   const getAverageFromRange = (rangeString) => {
     if (!rangeString) return 0;
     const numbers = rangeString.match(/\d+/g);
@@ -63,7 +62,7 @@ function BreedList() {
   const getAverageHeight = (breed) => getAverageFromRange(breed.height?.imperial);
   const getAverageLifespan = (breed) => getAverageFromRange(breed.life_span);
 
-  // --- FILTERING & SORTING LOGIC ---
+  // --- FILTERING & SORTING LOGIC (No Changes) ---
   const processedBreeds = breeds
     .filter((breed) =>
       breed.name.toLowerCase().includes(searchTerm.toLowerCase())
@@ -94,11 +93,9 @@ function BreedList() {
   if (error) return <h2 style={{ color: "red" }}>Error: {error}</h2>;
 
   return (
-    // We use sx={{ p: 2 }} to give the page some padding (p: 2 = 16px)
     <Box sx={{ p: 2 }}>
-      {/* We can remove the <h2>, as the AppBar has the title now */}
       
-      {/* Controls Area, now using Box */}
+      {/* Controls Area (No Changes) */}
       <Box sx={{ 
         display: 'flex', 
         flexWrap: 'wrap', 
@@ -107,25 +104,23 @@ function BreedList() {
         gap: '1rem', 
         maxWidth: '1000px', 
         margin: 'auto',
-        mb: 2 // Margin bottom
+        mb: 2
       }}>
         <SearchBar searchTerm={searchTerm} onSearchChange={setSearchTerm} />
         <SortDropdown sortOrder={sortOrder} onSortChange={setSortOrder} />
         
-        {/* --- REPLACED WITH MUI BUTTON --- */}
         <Button 
           variant="contained" 
           onClick={() => setIsModalOpen(true)}
-          sx={{ m: "1rem 0" }} // Give it the same margin as the others
+          sx={{ m: "1rem 0" }} 
         >
           Filter Temperaments ({selectedTemperaments.length})
         </Button>
 
-        {/* --- REPLACED WITH MUI BUTTON --- */}
         {selectedTemperaments.length > 0 && (
           <Button 
             variant="outlined" 
-            color="error" // 'error' gives it the red/pink style
+            color="error"
             onClick={() => setSelectedTemperaments([])}
             sx={{ m: "1rem 0" }}
           >
@@ -134,18 +129,19 @@ function BreedList() {
         )}
       </Box>
 
-      {/* --- Modal for Filtering (no change needed yet) --- */}
-      {isModalOpen && (
-        <Modal onClose={() => setIsModalOpen(false)}>
-          <TemperamentFilter
-            allTemperaments={allTemperaments}
-            selectedTemperaments={selectedTemperaments}
-            onTemperamentChange={setSelectedTemperaments}
-          />
-        </Modal>
-      )}
+      {/* --- THIS IS THE CHANGE ---
+        We've removed the <Modal> wrapper and are just rendering
+        our new <TemperamentFilter> component, which IS the modal.
+      */}
+      <TemperamentFilter
+        open={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        allTemperaments={allTemperaments}
+        selectedTemperaments={selectedTemperaments}
+        onTemperamentChange={setSelectedTemperaments}
+      />
 
-      {/* Grid Display Area */}
+      {/* Grid Display Area (No Changes) */}
       <Box sx={{
         display: "grid",
         gridTemplateColumns: "repeat(auto-fill, minmax(300px, 1fr))",
