@@ -87,31 +87,33 @@ This will launch the application in development mode at `http://localhost:3000`.
 ## File Structure
 
 ```
-/dog-breed-finder
+/dog-finder
 |-- /public
 |-- /src
 |   |-- /components
-|   |   |-- BreedCard.js
-|   |   |-- BreedDetail.js
-|   |   |-- BreedList.js
-|   |   |-- FavoritesPage.js
-|   |   |-- NavBar.js
-|   |   |-- SearchBar.js
-|   |   `-- SortDropdown.js
+|   |   |-- BreedCard.js      (The "smart" flip-card)
+|   |   |-- BreedCard.css     (3D flip animation styles)
+|   |   |-- BreedList.js      (Main page, fetches list, holds controls)
+|   |   |-- ComparePage.js    (Renders the MUI Table)
+|   |   |-- NavBar.js         (MUI AppBar, theme toggle, compare link)
+|   |   |-- SearchBar.js      (MUI TextField wrapper)
+|   |   |-- SortDropdown.js   (MUI Select wrapper)
+|   |   `-- TemperamentFilter.js (The MUI Dialog/Modal component)
 |   |
 |   |-- /context
-|   |   |-- FavoritesContext.js
-|   |   `-- ThemeContext.js
+|   |   |-- AppThemeProvider.js (Manages MUI light/dark mode)
+|   |   `-- CompareContext.js   (Manages the global compare list)
 |   |
-|   |-- App.css
-|   |-- App.js
-|   |-- index.css
-|   `-- index.js
+|   |-- App.css             (Minimal global styles)
+|   |-- App.js              (Main shell, holds NavBar and Routes)
+|   |-- index.css           (Global styles)
+|   `-- index.js            (Renders App, wraps all Context Providers)
 |
 |-- .env.example     (Placeholder for .env structure)
 |-- .gitignore
 |-- package.json
 `-- README.md
+
 ```
 
 ## Rubric Alignment
