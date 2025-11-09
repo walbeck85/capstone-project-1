@@ -6,39 +6,46 @@ The application is a "Dog Breed Finder" that allows users to browse, search, sor
 
 ## Showcase & Deliverables
 
-* **Video Presentation:** [Placeholder for link to 5-10 minute video showcase]
-* **Slide Deck:** [Placeholder for link to Google Slides/Canva deck]
-* **Written Reflection:** [Placeholder for link to written reflection document]
+* **Video Presentation:** https://www.loom.com/share/82396d86e2354f21add0047abbe13f6d
+* **Slide Deck:** https://docs.google.com/presentation/d/16vz9i0SdasykPZ45ixDYLUUYhL7XCfGbDZJ3mICGCDA/edit?usp=sharing
+* **Written Reflection:** https://docs.google.com/document/d/1PFiJFgNZSzJpx6KpjCiBVTih_6lQ1JD3e4AtPzS2OU4/edit?usp=sharing
 
 ## Screenshots
 
-*(Placeholder: Add screenshots of the app here, showing light and dark modes, the home page, and a details page.)*
+Here is a gallery of the app's core features, showing the final Material-UI refactor.
 
-### Home Page (Light/Dark)
-[Placeholder for Home Page Screenshot]
-
-### Details Page (Light/Dark)
-[Placeholder for Details Page Screenshot]
-
-### Favorites Page
-[Placeholder for Favorites Page Screenshot]
-
+| Feature Highlight | Screenshot (Imgur Link) |
+| :--- | :---: |
+| **Main UI (MUI Refactor)**<br>The primary view of the app in light mode. This shows the complete Material-UI refactor, including the sticky `<AppBar>`, themed controls, and the final, visually consistent `<Card>` grid. | ![Main Page Light Mode](https://imgur.com/a/WjThkwE) |
+| **Global Theming (Dark Mode)**<br>Demonstrates the MUI `AppThemeProvider`. All components, including the background, `AppBar`, and `Card`s, automatically switch to dark mode with one click. | ![Dark Mode](https://imgur.com/a/OUU1Qo0) |
+| **Advanced Filtering (MUI Dialog)**<br>Shows the "Temperament Filter" modal (`<Dialog>`). This highlights the searchable, multi-select list that solves the "overwhelming" 100+ temperament problem. | ![Filter Modal](https://imgur.com/a/vE8cqKy) |
+| **Low-Friction Details (Flip-Card UI)**<br>Shows the "flip card" refactor, which replaced the old "details" page. The card fetches and displays its own details on-demand, solving the "high-friction" UI feedback. | ![Flip Card UI](https://imgur.com/a/agDxp5s) |
+| **Global State & MUI Table**<br>Highlights two features: 1) The `CompareContext` (global state) successfully sending data to this page. 2) The final, themed, and responsive MUI `<Table>` refactor. | ![Compare Page](https://imgur.com/a/TOrI4ob) |
+| **Advanced Sorting Logic**<br>Shows the list sorted by "Lifespan." This demonstrates the helper functions that calculate an *average* from a string range (e.g., "10-12 years") to enable complex sorting. | ![Sort by Lifespan](https://imgur.com/a/MOmQntq) |
+| **UX Polish (MUI Snackbar)**<br>Shows the non-blocking "Added to compare!" notification. This demonstrates the MUI `<Snackbar>` that replaced `alert()`, addressing a key piece of UX feedback. | ![Snackbar Notification](https://imgur.com/a/iCZauRc) |
 ## Features
 
-* **Browse All Breeds:** Fetches and displays a list of all dog breeds from the API on page load.
-* **Dynamic Routing:** Uses React Router (`/breed/:id`) to show a unique, detailed page for each breed.
+* **Browse All Breeds:** The entire app uses MUI components (<AppBar>, <Card>, <Button>, <Select>, <TextField>, <Table>, <Dialog>) for a professional, consistent, and maintainable UI.
+* **Complete Material-UI (MUI) Refactor:** Fetches and displays a list of all dog breeds from the API on page load.
+* **"Flip Card" UI:** A low-friction 3D flip-card replaces the old "details page." Cards are now "smart" and fetch their own details on-demand when clicked.
 * **Client-Side Search:** A controlled search bar that filters breeds by name in real-time.
-* **Client-Side Sorting:** A dropdown to sort the breed list by Name (A-Z, Z-A) or by average Weight (Low-High, High-Low).
-* **Dark Mode:** A site-wide dark mode toggle that persists, built using `useContext`.
-* **Favorites System:** Allows users to "favorite" breeds. Selections are saved to `localStorage` (using a `useContext` provider) and are viewable on a separate "Favorites" page.
+* **Advanced Client-Side Sorting:** A controlled <Select> sorts the list by Name (A-Z, Z-A), Average Weight (Low-High, High-Low), Average Height (Short-Tall, Tall-Short), and Average Lifespan (Short-Long, Long-Short).
+* **Global Light/Dark Mode:** Uses a custom AppThemeProvider to provide a robust dark mode to all MUI components automatically.
+* **Breed Comparison Tool:** A useContext solution (CompareContext) allows a user to select up to 3 breeds for comparison.
+* **Non-Blocking Notifications:** Uses MUI's <Snackbar> component to provide clear success/error feedback without blocking the user.
 * **Async Handling:** Gracefully handles loading and error states for all API calls.
 
 ## Environment
 
-* React 18
+* Core: React 18, JavaScript (ES6+)
+* UI Library: Material-UI (MUI)
+    * @mui/material
+    * @mui/icons-material
+    * @emotion/react & @emotion/styled
 * Node.js 18.x or later
 * `npm` (for package management)
 * `react-router-dom` (for routing)
+* State Management: React Hooks (useState, useEffect, useContext, useMemo)
 
 ## Setup and Installation
 

@@ -10,7 +10,7 @@ import {
   Button,
   TextField,
   List,
-  ListItemButton, // We use ListItemButton to make the whole row clickable
+  ListItemButton, // Use ListItemButton to make the whole row clickable
   Checkbox,
   ListItemText
 } from '@mui/material';
@@ -20,8 +20,8 @@ import {
  * It receives 'open' and 'onClose' props to control its visibility.
  */
 function TemperamentFilter({ 
-  open, // <-- NEW: Prop to control visibility
-  onClose, // <-- NEW: Prop to close the dialog
+  open, // <-- Prop to control visibility
+  onClose, // <-- Prop to close the dialog
   allTemperaments, 
   selectedTemperaments, 
   onTemperamentChange 

@@ -9,8 +9,7 @@
   and the overall size of the card.
 */
 .card-scene {
-  /* *** THIS IS THE FIX ***
-     We MUST define a fixed height for the 3D scene.
+/*     MUST define a fixed height for the 3D scene.
      A height of 0 was causing the card to be invisible.
   */
   height: 350px;

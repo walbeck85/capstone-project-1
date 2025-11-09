@@ -14,7 +14,7 @@ import {
   TableContainer,
   TableHead,
   TableRow,
-  Paper, // This will be our table's background
+  Paper, // This is the table's background
   Alert // For the error state
 } from '@mui/material';
 import ClearAllIcon from '@mui/icons-material/ClearAll';
@@ -49,7 +49,7 @@ const getRowData = (breed, feature) => {
   }
 };
 
-// Define the rows we want to show, in order
+// Define the rows I want to show, in order
 const features = [
   'Image', 
   'Temperament', 
@@ -171,7 +171,7 @@ function ComparePage() {
                 </TableRow>
               </TableHead>
               <TableBody>
-                {/* Now we map over our features array to build the rows */}
+                {/* Map over the features array to build the rows */}
                 {features.map((feature) => (
                   <TableRow key={feature}>
                     {/* This is the sticky row header cell */}
@@ -188,7 +188,7 @@ function ComparePage() {
                     >
                       {feature}
                     </TableCell>
-                    {/* Now, get the data for this feature for each breed */}
+                    {/* Retrieve the data for this feature for each breed */}
                     {breeds.map(breed => (
                       <TableCell key={breed.id} align="left" sx={{ verticalAlign: 'top' }}>
                         {getRowData(breed, feature)}
