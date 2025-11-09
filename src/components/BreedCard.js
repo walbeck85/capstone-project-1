@@ -144,9 +144,6 @@ function BreedCard({ breed }) {
         </div>
         
         {/* === CARD BACK (DETAILS) === */}
-        {/* *** THIS IS THE FIX ***
-          We do the same thing for the back face.
-        */}
         <div className="card-face card-face-back">
           <Card sx={{ height: '100%', overflow: 'auto' }}>
             <CardContent sx={{ textAlign: 'left', fontSize: '0.9rem' }}>

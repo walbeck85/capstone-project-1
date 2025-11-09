@@ -3,7 +3,7 @@ import BreedCard from "./BreedCard";
 import SearchBar from "./SearchBar";
 import SortDropdown from "./SortDropdown";
 import TemperamentFilter from "./TemperamentFilter";
-// import Modal from "./Modal"; // <-- DELETE THIS IMPORT
+
 import { Box, Button } from '@mui/material';
 
 function BreedList() {
@@ -17,7 +17,7 @@ function BreedList() {
   const [selectedTemperaments, setSelectedTemperaments] = useState([]);
   const [isModalOpen, setIsModalOpen] = useState(false); // This state now controls the Dialog
 
-  // --- DATA FETCHING (No Changes) ---
+  // --- DATA FETCHING ---
   useEffect(() => {
     async function fetchBreeds() {
       try {
@@ -50,7 +50,7 @@ function BreedList() {
     fetchBreeds();
   }, []); 
 
-  // --- HELPER FUNCTIONS (No Changes) ---
+  // --- HELPER FUNCTIONS ---
   const getAverageFromRange = (rangeString) => {
     if (!rangeString) return 0;
     const numbers = rangeString.match(/\d+/g);
@@ -62,7 +62,7 @@ function BreedList() {
   const getAverageHeight = (breed) => getAverageFromRange(breed.height?.imperial);
   const getAverageLifespan = (breed) => getAverageFromRange(breed.life_span);
 
-  // --- FILTERING & SORTING LOGIC (No Changes) ---
+  // --- FILTERING & SORTING LOGIC ---
   const processedBreeds = breeds
     .filter((breed) =>
       breed.name.toLowerCase().includes(searchTerm.toLowerCase())
@@ -95,7 +95,7 @@ function BreedList() {
   return (
     <Box sx={{ p: 2 }}>
       
-      {/* Controls Area (No Changes) */}
+      {/* Controls Area */}
       <Box sx={{ 
         display: 'flex', 
         flexWrap: 'wrap', 
@@ -129,8 +129,8 @@ function BreedList() {
         )}
       </Box>
 
-      {/* --- THIS IS THE CHANGE ---
-        We've removed the <Modal> wrapper and are just rendering
+      {/*
+        Removed the <Modal> wrapper and are just rendering
         our new <TemperamentFilter> component, which IS the modal.
       */}
       <TemperamentFilter

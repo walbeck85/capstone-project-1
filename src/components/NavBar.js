@@ -2,7 +2,7 @@ import React, { useContext } from "react";
 import { NavLink } from "react-router-dom";
 import { useAppTheme } from "../context/AppThemeProvider"; // <-- IMPORT NEW HOOK
 import { CompareContext } from "../context/CompareContext";
-// --- THIS LINE IS THE FIX ---
+
 // I've removed 'Box' from the import list
 import { AppBar, Toolbar, Typography, Button } from '@mui/material'; // <-- IMPORT MUI
 import Brightness4Icon from '@mui/icons-material/Brightness4'; // Dark mode icon
@@ -14,7 +14,7 @@ function NavBar() {
   const { compareCount } = useContext(CompareContext);
 
   // Define a style for the NavLink, as it's not an MUI component
-  // We'll make it look like the other text
+  // I want the links to inherit the AppBar's text color
   const navLinkStyle = ({ isActive }) => ({
     color: 'inherit', // Inherits white/black from AppBar
     textDecoration: isActive ? 'underline' : 'none',

@@ -7,7 +7,7 @@ import './App.css';
 import NavBar from './components/NavBar';
 import BreedList from './components/BreedList';
 import ComparePage from './components/ComparePage';
-// We already deleted BreedDetail, which is correct
+// I already deleted BreedDetail, which is correct
 
 function App() {
   // const { theme } = useContext(ThemeContext); // <-- DELETE OLD
